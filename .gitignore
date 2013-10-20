@@ -1,0 +1,6 @@
+.project
+spec/fixtures
+pkg/*
+/metadata.json
+.DS_Store
+
