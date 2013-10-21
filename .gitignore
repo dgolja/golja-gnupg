@@ -1,5 +1,6 @@
 .project
 spec/fixtures
+.rspec_system
 pkg/*
 /metadata.json
 .DS_Store
