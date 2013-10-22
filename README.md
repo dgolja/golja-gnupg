@@ -10,11 +10,11 @@ Install GnuPG on Ubuntu/Debian/RedHat/CentOS/Amazon AMI and manage users public 
 
 ##Usage
 
-###Install GnuPG package
+####Install GnuPG package
 
     include gnupg
 
-###Add public key 20BC0A86 from PGP server from hkp://pgp.mit.edu/ to user root
+####Add public key 20BC0A86 from PGP server from hkp://pgp.mit.edu/ to user root
 
     gnupg_key { 'hkp_server_20BC0A86':
       ensure     => present,
@@ -23,7 +23,7 @@ Install GnuPG on Ubuntu/Debian/RedHat/CentOS/Amazon AMI and manage users public 
       key_server => 'hkp://pgp.mit.edu/',
     }
 
-###Add public key D50582E6 from standard http URI to user foo
+####Add public key D50582E6 from standard http URI to user foo
 
     gnupg_key { 'jenkins_foo_key':
       ensure     => present,
@@ -32,7 +32,7 @@ Install GnuPG on Ubuntu/Debian/RedHat/CentOS/Amazon AMI and manage users public 
       key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
     }
 
-###Add public key D50582E6 from puppet fileserver to user foo
+####Add public key D50582E6 from puppet fileserver to user foo
 
     gnupg_key { 'jenkins_foo_key':
       ensure     => present,
@@ -41,7 +41,7 @@ Install GnuPG on Ubuntu/Debian/RedHat/CentOS/Amazon AMI and manage users public 
       key_source => '"puppet:///modules/gnupg/D50582E6.key",',
     }
 
-###Remove public key 20BC0A86 from user root
+####Remove public key 20BC0A86 from user root
 
     gnupg_key {'root_remove':
       ensure => absent,

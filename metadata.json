@@ -1,0 +1,45 @@
+{
+  "name": "golja-gnupg",
+  "version": "0.0.2",
+  "summary": "Manage gnupg package and public keys",
+  "author": "Dejan Golja",
+  "description": "Manage gnupg instalaltion and handling public keys",
+  "dependencies": [],
+  "types": [
+    {
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "This attribute is currently used as a\n      system-wide primary key - namevar and therefore has to be unique."
+        },
+        {
+          "name": "user",
+          "doc": "The user account in which the PGP public key should be installed.\n    Usually it\u0027s stored in HOME/.gnupg/ dir"
+        },
+        {
+          "name": "key_source",
+          "doc": "      A source file containing PGP key. Values can be URIs pointing to remote files,\n      or fully qualified paths to files available on the local system.\n\n      The available URI schemes are *puppet*, *https*, *http* and *file*. *Puppet*\n      URIs will retrieve files from Puppet\u0027s built-in file server, and are\n      usually formatted as:\n\n      `puppet:///modules/name_of_module/filename`\n"
+        },
+        {
+          "name": "key_server",
+          "doc": "PGP key server from where to retrieve the public key"
+        },
+        {
+          "name": "key_id",
+          "doc": "Key ID. Usually the traditional 8-character key ID. Also accepted the\n      long more accurate (but  less  convenient) 16-character key ID."
+        }
+      ],
+      "providers": [
+        {
+          "name": "gnupg"
+        }
+      ],
+      "name": "gnupg_key",
+      "doc": "Manage PGP public keys with GnuPG"
+    }
+  ],
+  "checksums": {},
+  "source": "git://github.com/n1tr0g/golja-gnupg.git",
+  "project_page": "http://github.com/n1tr0g/golja-gnupg.git",
+  "license": "ASL 2.0"
+}
