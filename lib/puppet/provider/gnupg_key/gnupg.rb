@@ -17,10 +17,8 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   commands :gpg => 'gpg'
 
   def remove_public_key
-    #Puppet.debug("Removing key #{resource[:key_id]} for #{resource[:user]} with id: #{user_id}")
     command = "gpg --batch --yes --delete-keys #{resource[:key_id]}"
     output, status = Puppet::Util::SUIDManager.run_and_capture(command,  user_id)
-    #Puppet.debug("Exit status #{status.exitstatus} with output:\n#{output}")
     if status.exitstatus != 0
       raise Puppet::Error, "Could not remove #{resource[:key_id]} for user #{resource[:user]}: #{output}"
     end
@@ -29,25 +27,19 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   # where most of the magic happens
   # TODO implement dry-run to check if the key_id match the content of the file
   def add_public_key
-    #Puppet.debug("Add public key #{resource[:key_id]} for #{resource[:user]} with id: #{user_id}")
     if ! resource[:key_server].nil?
-      #Puppet.debug("add PGP from #{resource[:key_server]}")
       command = "gpg --keyserver #{resource[:key_server]} --recv-keys #{resource[:key_id]}"
       output, status = Puppet::Util::SUIDManager.run_and_capture(command,  user_id)
-      #Puppet.debug("Exit status #{status.exitstatus} with output:\n#{output}")
       if status.exitstatus != 0
         raise Puppet::Error, "Key #{resource[:key_id]} does not exsist on #{resource[:key_server]}"
       end
 
     elsif ! resource[:key_source].nil?
-      #Puppet.debug("add PGP key from key_source defined as #{resource[:key_source]}")
       if Puppet::Util.absolute_path?(resource[:key_source])
         if File.file?(resource[:key_source])
-          #Puppet.debug("absolute local path:\n" + File.read(resource[:key_source]))
           command = "gpg --import #{resource[:key_source]}"
           output, status = Puppet::Util::SUIDManager.run_and_capture(command,  user_id)
-          #Puppet.debug("Exit status #{status.exitstatus} with output:\n#{output}")
-          if status.exitstatus != 0
+           if status.exitstatus != 0
             raise Puppet::Error, "Error while importing key #{resource[:key_id]} from #{resource[:key_source]}"
           end
         elsif
@@ -67,7 +59,6 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
             end
         end
         output, status = Puppet::Util::SUIDManager.run_and_capture(command,  user_id)
-        #Puppet.debug("Exit status #{status.exitstatus} with output:\n#{output}")
         if status.exitstatus != 0
           raise Puppet::Error, "Error while importing key #{resource[:key_id]} from #{resource[:key_source]}:\n#{output}}"
         end
@@ -94,10 +85,8 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   end
 
   def exists?
-    #Puppet.debug("Exists? call\n#{resource.catalog.environment}")
     command = "gpg --list-keys --with-colons #{resource[:key_id]}"
     output, status = Puppet::Util::SUIDManager.run_and_capture(command,  user_id)
-    #Puppet.debug("Exit status #{status.exitstatus} with output:\n#{output}")
     if status.exitstatus == 0
       return true
     elsif status.exitstatus == 2
