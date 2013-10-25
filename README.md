@@ -4,6 +4,10 @@
 
 Install GnuPG on Ubuntu/Debian/RedHat/CentOS/Amazon AMI and manage users public keys.
 
+Tested with Tavis CI
+
+[![Build Status](https://travis-ci.org/n1tr0g/golja-gnupg.png)](https://travis-ci.org/n1tr0g/golja-gnupg)
+
 ##Installation
 
      $ puppet module install golja/gnupg
@@ -52,12 +56,12 @@ gnupg_key { 'jenkins_foo_key':
 ```puppet
 gnupg_key {'root_remove':
   ensure => absent,
-  key_id => 20BC0A86,
-  user   => root,
+  key_id => '20BC0A86',
+  user   => 'root',
 }
 ```    
 
-###Attributes
+###Parameters
 
 ####gnupg
 
