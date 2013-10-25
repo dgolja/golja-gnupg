@@ -16,39 +16,46 @@ Install GnuPG on Ubuntu/Debian/RedHat/CentOS/Amazon AMI and manage users public 
 
 ####Add public key 20BC0A86 from PGP server from hkp://pgp.mit.edu/ to user root
 
-    gnupg_key { 'hkp_server_20BC0A86':
-      ensure     => present,
-      key_id     => '20BC0A86',
-      user       => 'root',
-      key_server => 'hkp://pgp.mit.edu/',
-    }
+```puppet
+gnupg_key { 'hkp_server_20BC0A86':
+  ensure     => present,
+  key_id     => '20BC0A86',
+  user       => 'root',
+  key_server => 'hkp://pgp.mit.edu/',
+}
+```
 
 ####Add public key D50582E6 from standard http URI to user foo
 
-    gnupg_key { 'jenkins_foo_key':
-      ensure     => present,
-      key_id     => 'D50582E6',
-      user       => 'foo',
-      key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
-    }
+```puppet
+gnupg_key { 'jenkins_foo_key':
+  ensure     => present,
+  key_id     => 'D50582E6',
+  user       => 'foo',
+  key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
+}
+```
 
 ####Add public key D50582E6 from puppet fileserver to user foo
 
-    gnupg_key { 'jenkins_foo_key':
-      ensure     => present,
-      key_id     => 'D50582E6',
-      user       => 'foo',
-      key_source => '"puppet:///modules/gnupg/D50582E6.key",',
-    }
+```puppet
+gnupg_key { 'jenkins_foo_key':
+  ensure     => present,
+  key_id     => 'D50582E6',
+  user       => 'foo',
+  key_source => '"puppet:///modules/gnupg/D50582E6.key",',
+}
+```
 
 ####Remove public key 20BC0A86 from user root
 
-    gnupg_key {'root_remove':
-      ensure => absent,
-      key_id => 20BC0A86,
-      user   => root,
-    }
-    
+```puppet
+gnupg_key {'root_remove':
+  ensure => absent,
+  key_id => 20BC0A86,
+  user   => root,
+}
+```    
 
 ###Attributes
 
