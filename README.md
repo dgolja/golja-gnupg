@@ -16,7 +16,7 @@ Tested with Tavis CI
 
 ####Install GnuPG package
 
-    include gnupg
+    include '::gnupg'
 
 ####Add public key 20BC0A86 from PGP server from hkp://pgp.mit.edu/ to user root
 
@@ -67,7 +67,9 @@ gnupg_key {'root_remove':
 
 #####`package_ensure`
 
-Valid value present/absent. Default: present
+Valid value present/absent. In most cases you should never uninstall this package,
+because most of the modern Linux distros rely on gnupg for package verification, etc
+Default: present
 
 #####`package_name`
 
@@ -108,6 +110,40 @@ puppet:///modules/name_of_module/filename
 
 PGP key server from where to retrieve the public key. Valid URI schemes are
 *http*, *https*, *ldap* and *hkp*.
+
+### Tests
+
+There are two types of tests distributed with the module. Unit tests with rspec-puppet and system tests using rspec-system.
+
+For unit testing, make sure you have:
+
+* rake
+* bundler
+
+Install the necessary gems:
+
+    bundle install --path=vendor
+
+And then run the unit tests:
+
+    bundle exec rake spec
+
+
+If you want to run the system tests, make sure you also have:
+
+* vagrant > 1.3.x
+* Virtualbox > 4.2.10
+
+Then run the tests using:
+
+    bundle exec rake spec:system
+
+To run the tests on different operating systems, see the sets available in .nodeset.yml and run the specific set with the following syntax:
+
+    RSPEC_SET=debian-607-x64 bundle exec rake spec:system
+
+##Credits
+This module design, tests, etc are based on current puppetlabs- and sensu- modules and the help received via #puppet and #puppet-dev, especially from _rc and ken_barber
 
 ## Supported Platforms
 

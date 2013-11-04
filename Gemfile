@@ -5,6 +5,8 @@ group :development, :test do
   gem 'rspec-puppet',            :require => false
   gem 'puppetlabs_spec_helper',  :require => false
   gem 'puppet-lint',             :require => false
+  gem 'rspec-system-puppet', '~>2.0'
+  gem 'rspec-system-serverspec', '~>1.0'
 end
 
 if puppetversion = ENV['PUPPET_GEM_VERSION']
@@ -12,4 +14,3 @@ if puppetversion = ENV['PUPPET_GEM_VERSION']
 else
   gem 'puppet', :require => false
 end
-
