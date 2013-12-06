@@ -17,7 +17,7 @@ describe 'gnupg', :type => :class do
       let(:facts) {{ :osfamily => system }}
     end
     
-    it { should include_class('gnupg::install') }
+    it { should contain_class('gnupg::install') }
     
     describe "gnupg on system #{system}" do
 
