@@ -1,3 +1,4 @@
+# PRIVATE CLASS: do not use directly
 class gnupg::params {
 
   $package_ensure = 'present'
