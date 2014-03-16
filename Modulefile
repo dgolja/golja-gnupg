@@ -1,5 +1,5 @@
 name    'golja-gnupg'
-version '0.0.2'
+version '0.0.3'
 source 'git://github.com/n1tr0g/golja-gnupg.git'
 author 'Dejan Golja'
 license 'ASL 2.0'
