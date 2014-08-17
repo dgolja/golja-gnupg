@@ -1,3 +1,7 @@
+2014-08-17 - Dejan Golja <dejan@golja.org> - 0.0.4
+* Update metadata.json and removed Modulefile due to 
+  as of Puppet 3.6 the Modulefile has been deprecated
+
 2014-03-16 - Dejan Golja <dejan@golja.org> - 0.0.3
 * Added Puppet Forge Search by Module Compatibility
 

@@ -147,10 +147,10 @@ This module design, tests, etc are based on current puppetlabs- and sensu- modul
 
 ## Supported Platforms
 
-* Debian Wheezy
+* Debian 6/7
 * Ubuntu 12+
-* RedHat 5/6
-* CentOS 5/6
+* RedHat 5/6/7
+* CentOS 5/6/7
 * Amazon AMI
 
 ## License
