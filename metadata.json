@@ -4,14 +4,16 @@
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "5",
-        "6"
+        "6",
+        "7"
       ]
     },
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
         "5",
-        "6"
+        "6",
+        "7"
       ]
     },
     {
@@ -25,7 +27,8 @@
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
         "10.04",
-        "12.04"
+        "12.04",
+        "14.04"
       ]
     }
   ],
@@ -40,76 +43,14 @@
     }
   ],
   "author": "Dejan Golja",
-  "checksums": {
-    "CHANGELOG": "d9f8cf8a127eb1d724b9af56ab3f9b2e",
-    "Gemfile": "57ddf3883b4136a3b1dd98587149db53",
-    "LICENSE": "068b61c857ebf3d856893c6ebee97c4e",
-    "Modulefile": "c59aa3b7607971d6d67760df86039079",
-    "README.md": "3a38adf09a7d55a8b88bf1dc896bed51",
-    "Rakefile": "e539870cc035897e8716c038a4767d37",
-    "files/random.key": "ac50bb402fe879d8d6251600ba96fc51",
-    "lib/puppet/provider/gnupg_key/gnupg.rb": "bbcd5a8517f3cc614301f1f27fbab589",
-    "lib/puppet/type/gnupg_key.rb": "58aea541abad95d51c3a92dcd65d9bc3",
-    "manifests/init.pp": "151f01e1f09eed4cb054e631e0d747b5",
-    "manifests/install.pp": "6c07f0956ad0c1bc35342cfe75d8e14e",
-    "manifests/params.pp": "119cb5720e5258229fd544b0dacd6752",
-    "spec/classes/gnupg_init_spec.rb": "dca569eeb6478910b2c6df5e39848ca2",
-    "spec/spec_helper.rb": "1ada069d7869a2d9223d2e6a4bf3b2a7",
-    "spec/spec_helper_system.rb": "811296afd49e7e38c7b45b3a477363fa",
-    "spec/system/gnupg_key_install_spec.rb": "462a0add05b52dfbf8a595cc81d96405",
-    "spec/system/install_spec.rb": "d3a5c8e44088bec955b9564664e89031",
-    "spec/unit/puppet/type/gnupg_key_spec.rb": "e66b606ae9d083ad4af82e8652b14d8d",
-    "tests/gnupg_key.pp": "4e780882212f7835afa62f92471e2e71",
-    "tests/init.pp": "e3d66cab2e4cf9338c1919a6a0aff57b"
-  },
   "dependencies": [
-
   ],
-  "description": "Manage gnupg instalaltion and handling public keys",
   "license": "ASL 2.0",
   "name": "golja-gnupg",
   "project_page": "http://github.com/n1tr0g/golja-gnupg.git",
   "source": "git://github.com/n1tr0g/golja-gnupg.git",
   "summary": "Manage gnupg package and public keys",
-  "types": [
-    {
-      "name": "gnupg_key",
-      "doc": "Manage PGP public keys with GnuPG",
-      "properties": [
-        {
-          "name": "ensure",
-          "doc": "The basic property that the resource should be in.\n\nValid values are `present`, `absent`. "
-        }
-      ],
-      "parameters": [
-        {
-          "name": "name",
-          "doc": "This attribute is currently used as a\nsystem-wide primary key - namevar and therefore has to be unique.\n\n"
-        },
-        {
-          "name": "user",
-          "doc": "The user account in which the PGP public key should be installed.\nUsually it's stored in HOME/.gnupg/ dir\n\n"
-        },
-        {
-          "name": "key_source",
-          "doc": "A source file containing PGP key. Values can be URIs pointing to remote files,\nor fully qualified paths to files available on the local system.\n\nThe available URI schemes are *puppet*, *https*, *http* and *file*. *Puppet*\nURIs will retrieve files from Puppet's built-in file server, and are\nusually formatted as:\n\n`puppet:///modules/name_of_module/filename`\n\n"
-        },
-        {
-          "name": "key_server",
-          "doc": "PGP key server from where to retrieve the public key\n\n"
-        },
-        {
-          "name": "key_id",
-          "doc": "Key ID. Usually the traditional 8-character key ID. Also accepted the\nlong more accurate (but  less  convenient) 16-character key ID.\n\n"
-        }
-      ],
-      "providers": [
-        {
-          "name": "gnupg",
-          "doc": "Provider for gnupg_key type.\n\n* Required binaries: `gpg`.\n* Default for `kernel` == `Linux`."
-        }
-      ]
-    }
-  ],
-  "version": "0.0.3"
+  "version": "0.0.4",
+  "tags": ["gnupg", "pgp", "ubuntu", "debian", "redhat", "centos"],
+  "issues_url": "https://github.com/n1tr0g/golja-gnupg/issues"
 }
