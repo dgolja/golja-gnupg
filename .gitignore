@@ -3,4 +3,4 @@ spec/fixtures
 .rspec_system
 pkg/*
 .DS_Store
-
+Gemfile.lock
