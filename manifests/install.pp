@@ -1,9 +1,9 @@
 #
-class gnupg::install inherits gnupg {
+class gnupg::install {
 
   package { 'gnupg':
-    ensure => $package_ensure,
-    name   => $package_name,
+    ensure => $gnupg::package_ensure,
+    name   => $gnupg::package_name,
   }
 
 }
