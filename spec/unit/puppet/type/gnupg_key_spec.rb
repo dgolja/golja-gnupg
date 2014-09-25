@@ -1,5 +1,5 @@
-require 'puppet'                                                                                                                                                                                                                           
-require 'puppet/type/gnupg_key'                                                                                                                                                                                                        
+require 'puppet'
+require 'puppet/type/gnupg_key'
 describe Puppet::Type.type(:gnupg_key) do
   before :each do
     @gnupg_key = Puppet::Type.type(:gnupg_key).new(:name => 'foo')
@@ -32,7 +32,7 @@ describe Puppet::Type.type(:gnupg_key) do
       @gnupg_key[:key_server] = val
       @gnupg_key[:key_server].should == val.to_s
     end
-  end  
+  end
   ['puppet:///modules/gnupg/random.key', 'http://www.puppetlabs.com/key.key', 'https://www.puppetlabs.com/key.key', 'file:///etc/foo.key', '/etc/foo.key'].each do |val|
     it "should accept key_source #{val}" do
       @gnupg_key[:key_source] = val
