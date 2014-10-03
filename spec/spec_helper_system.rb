@@ -30,11 +30,11 @@ RSpec.configure do |c|
 
   # Enable colour
   c.tty = true
-  
-  # Include in our local helpers, because some puppet images run 
+
+  # Include in our local helpers, because some puppet images run
   # as diffrent users
   c.include ::LocalHelpers
-  
+
   # Puppet helpers
   c.include RSpecSystemPuppet::Helpers
   c.extend RSpecSystemPuppet::Helpers
@@ -48,7 +48,7 @@ RSpec.configure do |c|
     puppet_module_install(:source => proj_root, :module_name => 'gnupg')
     shell 'whoami'
     shell 'puppet module list'
-        
+
     # disable hiera warnings
     file = Tempfile.new('foo')
     begin

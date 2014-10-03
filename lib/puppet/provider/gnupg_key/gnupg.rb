@@ -48,7 +48,9 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
       else
         uri = URI.parse(URI.escape(resource[:key_source]))
         case uri.scheme
-          when /https?/
+          when /https/
+            command = "wget -O- #{resource[:key_source]} | gpg --import"
+          when /http/
             command = "gpg --fetch-keys #{resource[:key_source]}"
           when 'puppet'
             Puppet::Util::SUIDManager.asuser(user_id) do
