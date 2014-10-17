@@ -8,7 +8,7 @@ describe 'gnupg_key install' do
     end
   end
 
-  it 'should install a key from a URL address' do
+  it 'should install a key from a HTTP URL address' do
     pp = <<-EOS.unindent
       gnupg_key { 'jenkins_key':
         ensure     => present,
@@ -27,6 +27,30 @@ describe 'gnupg_key install' do
     # check that gnupg installed the key
     gpg("--list-keys D50582E6") do |r|
       r.stdout.should =~ /D50582E6/
+      r.stderr.should == ''
+      r.exit_code == 0
+    end
+  end
+
+  it 'should install a key from a HTTPS URL address' do
+    pp = <<-EOS.unindent
+      gnupg_key { 'newrelic_key':
+        ensure     => present,
+        user       => 'root',
+        key_source => 'https://download.newrelic.com/548C16BF.gpg',
+        key_id     => '548C16BF',
+      }
+    EOS
+
+    puppet_apply(pp) do |r|
+      r.exit_code.should == 2
+      r.refresh
+      r.exit_code.should == 0
+    end
+
+    # check that gnupg installed the key
+    gpg("--list-keys 548C16BF") do |r|
+      r.stdout.should =~ /548C16BF/
       r.stderr.should == ''
       r.exit_code == 0
     end

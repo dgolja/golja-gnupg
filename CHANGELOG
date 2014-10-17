@@ -1,3 +1,6 @@
+2014-10-07 - Dejan Golja <dejan@golja.org> - 0.0.5
+* bugfix for https keys
+
 2014-08-17 - Dejan Golja <dejan@golja.org> - 0.0.4
 * Update metadata.json and removed Modulefile due to 
   as of Puppet 3.6 the Modulefile has been deprecated
