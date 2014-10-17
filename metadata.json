@@ -47,10 +47,10 @@
   ],
   "license": "ASL 2.0",
   "name": "golja-gnupg",
-  "project_page": "http://github.com/n1tr0g/golja-gnupg.git",
+  "project_page": "https://github.com/n1tr0g/golja-gnupg",
   "source": "git://github.com/n1tr0g/golja-gnupg.git",
   "summary": "Manage gnupg package and public keys",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "tags": ["gnupg", "pgp", "ubuntu", "debian", "redhat", "centos"],
   "issues_url": "https://github.com/n1tr0g/golja-gnupg/issues"
 }
