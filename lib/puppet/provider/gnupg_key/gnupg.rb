@@ -18,8 +18,9 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
 
   def remove_public_key
     command = "gpg --batch --yes --delete-keys #{resource[:key_id]}"
-    output, status = Puppet::Util::SUIDManager.run_and_capture(command,  user_id)
-    if status.exitstatus != 0
+    begin
+      output = Puppet::Util::Execution.execute(command,  :uid => user_id)
+    rescue Puppet::ExecutionFailure => e
       raise Puppet::Error, "Could not remove #{resource[:key_id]} for user #{resource[:user]}: #{output}"
     end
   end
@@ -29,8 +30,9 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   def add_public_key
     if ! resource[:key_server].nil?
       command = "gpg --keyserver #{resource[:key_server]} --recv-keys #{resource[:key_id]}"
-      output, status = Puppet::Util::SUIDManager.run_and_capture(command,  user_id)
-      if status.exitstatus != 0
+      begin
+        output = Puppet::Util::Execution.execute(command,  :uid => user_id, :failonfail => true)
+      rescue Puppet::ExecutionFailure => e
         raise Puppet::Error, "Key #{resource[:key_id]} does not exsist on #{resource[:key_server]}"
       end
 
@@ -38,8 +40,9 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
       if Puppet::Util.absolute_path?(resource[:key_source])
         if File.file?(resource[:key_source])
           command = "gpg --import #{resource[:key_source]}"
-          output, status = Puppet::Util::SUIDManager.run_and_capture(command,  user_id)
-           if status.exitstatus != 0
+          begin
+            output = Puppet::Util::Execution.execute(command, :uid => user_id, :failonfail => true)
+          rescue Puppet::ExecutionFailure => e
             raise Puppet::Error, "Error while importing key #{resource[:key_id]} from #{resource[:key_source]}"
           end
         elsif
@@ -60,11 +63,11 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
               command = "gpg --import #{tmpfile.path.to_s}"
             end
         end
-        output, status = Puppet::Util::SUIDManager.run_and_capture(command,  user_id)
-        if status.exitstatus != 0
+        begin
+          output = Puppet::Util::Execution.execute(command, :uid => user_id, :failonfail => true)
+        rescue Puppet::ExecutionFailure => e
           raise Puppet::Error, "Error while importing key #{resource[:key_id]} from #{resource[:key_source]}:\n#{output}}"
         end
-
       end
     end
   end
@@ -88,13 +91,13 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
 
   def exists?
     command = "gpg --list-keys --with-colons #{resource[:key_id]}"
-    output, status = Puppet::Util::SUIDManager.run_and_capture(command,  user_id)
-    if status.exitstatus == 0
+    output = Puppet::Util::Execution.execute(command, :uid => user_id)
+    if output.exitstatus == 0
       return true
-    elsif status.exitstatus == 2
+    elsif output.exitstatus == 2
       return false
     else
-      raise Puppet::Error, "Non recognized exit status from GnuPG #{status.exitstatus} #{output}"
+      raise Puppet::Error, "Non recognized exit status from GnuPG #{output.exitstatus} #{output}"
     end
   end
 
