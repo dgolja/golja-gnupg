@@ -10,7 +10,6 @@ rvm:
 script: "bundle exec rake test SPEC_OPTS='--format documentation'"
 env:
   matrix:
-    - PUPPET_GEM_VERSION="~> 2.7.0"
     - PUPPET_GEM_VERSION="~> 3.0.0"
     - PUPPET_GEM_VERSION="~> 3.1.0"
     - PUPPET_GEM_VERSION="~> 3.2.0"
@@ -22,10 +21,6 @@ matrix:
   allow_failures:
     - rvm: ruby-head
   exclude:
-    - rvm: 1.9.3
-      env: PUPPET_GEM_VERSION="~> 2.7.0"
-    - rvm: 2.0.0
-      env: PUPPET_GEM_VERSION="~> 2.7.0"
     - rvm: 2.0.0
       env: PUPPET_GEM_VERSION="~> 3.0.0"
     - rvm: 2.0.0
