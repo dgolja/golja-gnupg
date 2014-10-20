@@ -1,3 +1,10 @@
+2013-10-20 - Dejan Golja <dejan@golja.org> - 1.0.0
+* remove support for puppet 2.7.x due to the native type
+* added beaker system spec tests
+* Update type definition so it uses Puppet::Util::Execution.execute
+  instead of Puppet::Util::SUIDManager.run_and_capture (deprecated)
+* bump version to 1.0.0
+
 2014-10-07 - Dejan Golja <dejan@golja.org> - 0.0.5
 * bugfix for https keys
 

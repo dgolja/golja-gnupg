@@ -1,10 +1,22 @@
 #GnuPG puppet module
 
+####Table of Contents
+
+1. [Overview](##overview)
+2. [Installation](##Installation)
+3. [Usage - Configuration options and additional functionality](@#usage)
+4. [Reference - An under-the-hood peek at what the module is doing and how](##reference)
+5. [Limitations - OS compatibility, etc.](##limitations)
+6. [Development - Guide for contributing to the module](##development)
+7. [License](##license)
+
 ##Overview
 
 Install GnuPG on Ubuntu/Debian/RedHat/CentOS/Amazon AMI and manage users public keys.
 
 Tested with Tavis CI
+
+NOTE: For puppet 2.7.x supported module please use version 0.X.X
 
 [![Build Status](https://travis-ci.org/n1tr0g/golja-gnupg.png)](https://travis-ci.org/n1tr0g/golja-gnupg)
 
@@ -61,7 +73,9 @@ gnupg_key {'root_remove':
 }
 ```    
 
-###Parameters
+##Reference
+
+###Classes
 
 ####gnupg
 
@@ -113,7 +127,7 @@ PGP key server from where to retrieve the public key. Valid URI schemes are
 
 ### Tests
 
-There are two types of tests distributed with the module. Unit tests with rspec-puppet and system tests using rspec-system.
+There are two types of tests distributed with the module. Unit tests with rspec-puppet and system tests using rspec-system or beaker.
 
 For unit testing, make sure you have:
 
@@ -142,16 +156,23 @@ To run the tests on different operating systems, see the sets available in .node
 
     RSPEC_SET=debian-607-x64 bundle exec rake spec:system
 
-##Credits
-This module design, tests, etc are based on current puppetlabs- and sensu- modules and the help received via #puppet and #puppet-dev, especially from _rc and ken_barber
+Alernatively you can run beaker tests using:
 
-## Supported Platforms
+    bundle exec rake beaker
+
+##Limitations
+
+This module has been tested on:
 
 * Debian 6/7
 * Ubuntu 12+
 * RedHat 5/6/7
 * CentOS 5/6/7
 * Amazon AMI
+
+##Development
+
+Please see CONTRIBUTING.md
 
 ## License
 
