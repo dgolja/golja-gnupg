@@ -45,12 +45,12 @@
   "author": "Dejan Golja",
   "dependencies": [
   ],
-  "license": "ASL 2.0",
+  "license": "Apache-2.0",
   "name": "golja-gnupg",
   "project_page": "https://github.com/n1tr0g/golja-gnupg",
   "source": "git://github.com/n1tr0g/golja-gnupg.git",
   "summary": "Manage gnupg package and public keys",
   "version": "1.0.0",
-  "tags": ["gnupg", "pgp", "ubuntu", "debian", "redhat", "centos"],
+  "tags": ["gnupg", "pgp"],
   "issues_url": "https://github.com/n1tr0g/golja-gnupg/issues"
 }
