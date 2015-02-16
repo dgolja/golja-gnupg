@@ -16,8 +16,12 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   # although we do not use the commands class it's used to detect if the gpg command is installed on the system
   commands :gpg => 'gpg'
 
+  def gpg_arg_trusted_keyring
+    return resource[:trusted] ? '--no-default-keyring --keyring trustedkeys.gpg' : ''
+  end
+
   def remove_public_key
-    command = "gpg --batch --yes --delete-keys #{resource[:key_id]}"
+    command = "gpg --batch --yes --delete-keys #{gpg_arg_trusted_keyring} #{resource[:key_id]}"
     begin
       output = Puppet::Util::Execution.execute(command,  :uid => user_id)
     rescue Puppet::ExecutionFailure => e
@@ -29,7 +33,7 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   # TODO implement dry-run to check if the key_id match the content of the file
   def add_public_key
     if ! resource[:key_server].nil?
-      command = "gpg --keyserver #{resource[:key_server]} --recv-keys #{resource[:key_id]}"
+      command = "gpg #{gpg_arg_trusted_keyring} --keyserver #{resource[:key_server]} --recv-keys #{resource[:key_id]}"
       begin
         output = Puppet::Util::Execution.execute(command,  :uid => user_id, :failonfail => true)
       rescue Puppet::ExecutionFailure => e
@@ -39,7 +43,7 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
     elsif ! resource[:key_source].nil?
       if Puppet::Util.absolute_path?(resource[:key_source])
         if File.file?(resource[:key_source])
-          command = "gpg --import #{resource[:key_source]}"
+          command = "gpg #{gpg_arg_trusted_keyring} --import #{resource[:key_source]}"
           begin
             output = Puppet::Util::Execution.execute(command, :uid => user_id, :failonfail => true)
           rescue Puppet::ExecutionFailure => e
@@ -52,15 +56,15 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
         uri = URI.parse(URI.escape(resource[:key_source]))
         case uri.scheme
           when /https/
-            command = "wget -O- #{resource[:key_source]} | gpg --import"
+            command = "wget -O- #{resource[:key_source]} | gpg #{gpg_arg_trusted_keyring} --import"
           when /http/
-            command = "gpg --fetch-keys #{resource[:key_source]}"
+            command = "gpg #{gpg_arg_trusted_keyring} --fetch-keys #{resource[:key_source]}"
           when 'puppet'
             Puppet::Util::SUIDManager.asuser(user_id) do
               tmpfile = Tempfile.open(['golja-gnupg', 'key'])
               tmpfile.write(puppet_content)
               tmpfile.flush
-              command = "gpg --import #{tmpfile.path.to_s}"
+              command = "gpg #{gpg_arg_trusted_keyring} --import #{tmpfile.path.to_s}"
             end
         end
         begin
@@ -90,7 +94,7 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   end
 
   def exists?
-    command = "gpg --list-keys --with-colons #{resource[:key_id]}"
+    command = "gpg #{gpg_arg_trusted_keyring} --list-keys --with-colons #{resource[:key_id]}"
     output = Puppet::Util::Execution.execute(command, :uid => user_id)
     if output.exitstatus == 0
       return true
