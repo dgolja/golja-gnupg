@@ -1,4 +1,5 @@
 require 'uri'
+require 'puppet/parameter/boolean'
 Puppet::Type.newtype(:gnupg_key) do
   @doc = "Manage PGP public keys with GnuPG"
 
@@ -104,6 +105,10 @@ Puppet::Type.newtype(:gnupg_key) do
       value.upcase.intern
     end
 
+  end
+  
+  newparam(:trusted, :boolean => true, :parent => Puppet::Parameter::Boolean) do
+    desc "This key is trusted for verification purposes. It's stored in the trustedkeys.gpg keyring. Defaults to false."
   end
 
 end
