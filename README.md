@@ -18,7 +18,7 @@ Tested with Tavis CI
 
 NOTE: For puppet 2.7.x supported module please use version 0.X.X
 
-[![Build Status](https://travis-ci.org/n1tr0g/golja-gnupg.png)](https://travis-ci.org/n1tr0g/golja-gnupg)
+[![Build Status](https://travis-ci.org/n1tr0g/golja-gnupg.png)](https://travis-ci.org/n1tr0g/golja-gnupg) [![Puppet Forge](http://img.shields.io/puppetforge/v/golja/gnupg.svg)](https://forge.puppetlabs.com/golja/gnupg)
 
 ##Installation
 
