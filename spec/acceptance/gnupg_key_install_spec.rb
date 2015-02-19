@@ -35,13 +35,13 @@ describe 'install gnupg keys' do
         key_id     => '548C16BF',
       }
     EOS
-  
+
     apply_manifest(pp, :catch_failures => true)
     apply_manifest(pp, :catch_changes => true)
 
     # check that gnupg installed the key
-    gpg("--list-keys D50582E6") do |r|
-      expect(r.stdout).to match(/D50582E6/)
+    gpg("--list-keys 548C16BF") do |r|
+      expect(r.stdout).to match(/548C16BF/)
       expect(r.exit_code).to eq(0)
     end
   end
