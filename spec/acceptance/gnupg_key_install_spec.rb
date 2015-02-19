@@ -6,16 +6,16 @@ describe 'install gnupg keys' do
     apply_manifest(pp, :catch_failures => true)
   end
 
-  it 'should install a key from a http URL address' do
+  it 'should install a public key from a http URL address' do
     pp = <<-EOS
       gnupg_key { 'jenkins_key':
         ensure     => present,
         user       => 'root',
         key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
-        key_id     => 'D50582E6', 
+        key_id     => 'D50582E6',
       }
     EOS
-  
+
     apply_manifest(pp, :catch_failures => true)
     apply_manifest(pp, :catch_changes => true)
 
@@ -26,7 +26,7 @@ describe 'install gnupg keys' do
     end
   end
 
-  it 'should install a key from a https URL address' do
+  it 'should install a public key from a https URL address' do
     pp = <<-EOS
       gnupg_key { 'newrelic_key':
         ensure     => present,
@@ -46,7 +46,7 @@ describe 'install gnupg keys' do
     end
   end
 
- it 'should install a key from a key server' do
+  it 'should install a public key from a key server' do
     pp = <<-EOS
       gnupg_key { 'root_key_foo':
         ensure    => present,
@@ -67,7 +67,7 @@ describe 'install gnupg keys' do
   end
 
 
-  it 'should remove key 20BC0A86' do
+  it 'should remove public key 20BC0A86' do
     pp = <<-EOS
       gnupg_key { 'bye_bye_key':
         ensure => absent,
@@ -80,7 +80,7 @@ describe 'install gnupg keys' do
     apply_manifest(pp, :catch_changes => true)
   end
 
-  it 'should install key from the puppet fileserver/module repository' do
+  it 'should install public key from the puppet fileserver/module repository' do
     pp = <<-EOS
       gnupg_key {'add_key_by_remote_source':
         ensure     => present,
@@ -114,7 +114,7 @@ describe 'install gnupg keys' do
     apply_manifest(pp, :expect_failures => true)
   end
 
-  it 'should fail because there is no content on the URL address' do
+  it 'should fail to install a public key, because there is no content at the supplied URL address' do
     pp = <<-EOS
       gnupg_key { 'jenkins_key':
         ensure     => present,
@@ -126,5 +126,4 @@ describe 'install gnupg keys' do
 
     apply_manifest(pp, :expect_failures => true)
   end
-
 end
