@@ -77,7 +77,6 @@ describe 'install gnupg keys' do
 
 
   it 'should delete public key 20BC0A86' do
-    # clean up
     scp_to master, 'files/random.key', '/tmp/random.key'
     gpg("--import /tmp/random.key") {}
 
@@ -105,6 +104,56 @@ describe 'install gnupg keys' do
         key_id     => 20BC0A86,
         user       => root,
         key_source => "puppet:///modules/gnupg/random.key",
+      }
+    EOS
+
+    apply_manifest(pp, :catch_failures => true)
+    apply_manifest(pp, :catch_changes => true)
+
+    # check that gnupg installed the key
+    gpg("--list-keys 20BC0A86") do |r|
+      expect(r.stdout).to match(/20BC0A86/)
+      expect(r.exit_code).to eq(0)
+    end
+
+    # clean up
+    gpg("--batch --delete-key 58AA73E230EB06B2A2DE8A873CCE8BC520BC0A86") {}
+  end
+
+  it 'should install public key from a local file path' do
+    scp_to master, 'files/random.key', '/tmp/random.key'
+
+    pp = <<-EOS
+      gnupg_key {'add_key_by_local_file_path':
+        ensure     => present,
+        key_id     => 20BC0A86,
+        user       => root,
+        key_source => "/tmp/random.key",
+      }
+    EOS
+
+    apply_manifest(pp, :catch_failures => true)
+    apply_manifest(pp, :catch_changes => true)
+
+    # check that gnupg installed the key
+    gpg("--list-keys 20BC0A86") do |r|
+      expect(r.stdout).to match(/20BC0A86/)
+      expect(r.exit_code).to eq(0)
+    end
+
+    # clean up
+    gpg("--batch --delete-key 58AA73E230EB06B2A2DE8A873CCE8BC520BC0A86") {}
+  end
+
+  it 'should install public key from a local file URL address' do
+    scp_to master, 'files/random.key', '/tmp/random.key'
+
+    pp = <<-EOS
+      gnupg_key {'add_key_by_local_file_path':
+        ensure     => present,
+        key_id     => 20BC0A86,
+        user       => root,
+        key_source => "file:///tmp/random.key",
       }
     EOS
 
