@@ -24,6 +24,9 @@ describe 'install gnupg keys' do
       expect(r.stdout).to match(/D50582E6/)
       expect(r.exit_code).to eq(0)
     end
+
+    # clean up
+    gpg("--batch --delete-key 150FDE3F7787E7D11EF4E12A9B7D32F2D50582E6") {}
   end
 
   it 'should install a public key from a https URL address' do
@@ -44,6 +47,9 @@ describe 'install gnupg keys' do
       expect(r.stdout).to match(/548C16BF/)
       expect(r.exit_code).to eq(0)
     end
+
+    # clean up
+    gpg("--batch --delete-key B60A3EC9BC013B9C23790EC8B31B29E5548C16BF") {}
   end
 
   it 'should install a public key from a key server' do
@@ -64,10 +70,17 @@ describe 'install gnupg keys' do
       expect(r.stdout).to match(/20BC0A86/)
       expect(r.exit_code).to eq(0)
     end
+
+    # clean up
+    gpg("--batch --delete-key 58AA73E230EB06B2A2DE8A873CCE8BC520BC0A86") {}
   end
 
 
-  it 'should remove public key 20BC0A86' do
+  it 'should delete public key 20BC0A86' do
+    # clean up
+    scp_to master, 'files/random.key', '/tmp/random.key'
+    gpg("--import /tmp/random.key") {}
+
     pp = <<-EOS
       gnupg_key { 'bye_bye_key':
         ensure => absent,
@@ -78,6 +91,11 @@ describe 'install gnupg keys' do
 
     apply_manifest(pp, :catch_failures => true)
     apply_manifest(pp, :catch_changes => true)
+
+    # check that gnupg deleted the key
+    gpg("--list-keys 20BC0A86", :acceptable_exit_codes => [0, 2]) do |r|
+      expect(r.stdout).to_not match(/20BC0A86/)
+    end
   end
 
   it 'should install public key from the puppet fileserver/module repository' do
@@ -97,8 +115,10 @@ describe 'install gnupg keys' do
     gpg("--list-keys 20BC0A86") do |r|
       expect(r.stdout).to match(/20BC0A86/)
       expect(r.exit_code).to eq(0)
-
     end
+
+    # clean up
+    gpg("--batch --delete-key 58AA73E230EB06B2A2DE8A873CCE8BC520BC0A86") {}
   end
 
   it 'should not install a key, because local resource does not exists' do
