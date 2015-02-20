@@ -13,18 +13,30 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
     []
   end
 
-  # although we do not use the commands class it's used to detect if the gpg command is installed on the system
+  # although we do not use the commands class it's used to detect if the gpg and awk commands are installed on the system
   commands :gpg => 'gpg'
+  commands :awk => 'awk'
 
-  def remove_public_key
-    command = "gpg --batch --yes --delete-keys #{resource[:key_id]}"
+  def remove_key
+    begin
+      fingerprint_command = "gpg --fingerprint --with-colons #{resource[:key_id]} | awk -F: '$1 == \"fpr\" {print $10;}'"
+      fingerprint = Puppet::Util::Execution.execute(fingerprint_command, :uid => user_id)
+    rescue Puppet::ExecutionFailure => e
+      raise Puppet::Error, "Could not determine fingerprint for  #{resource[:key_id]} for user #{resource[:user]}: #{fingerprint}"
+    end
+
+    if resource[:key_type] == :public
+      command = "gpg --batch --yes --delete-key #{fingerprint}"
+    elsif resource[:key_type] == :private
+      command = "gpg --batch --yes --delete-secret-key #{fingerprint}"
+    end
+
     begin
       output = Puppet::Util::Execution.execute(command,  :uid => user_id)
     rescue Puppet::ExecutionFailure => e
       raise Puppet::Error, "Could not remove #{resource[:key_id]} for user #{resource[:user]}: #{output}"
     end
   end
-
 
   # where most of the magic happens
   # TODO implement dry-run to check if the key_id match the content of the file
@@ -123,10 +135,10 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   end
 
   def create
-    add_key()
+    add_key
   end
 
   def destroy
-    remove_public_key()
+    remove_key
   end
 end

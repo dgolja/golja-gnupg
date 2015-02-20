@@ -52,7 +52,7 @@ describe 'install gnupg keys' do
     gpg("--batch --delete-key B60A3EC9BC013B9C23790EC8B31B29E5548C16BF") {}
   end
 
-  it 'should install a public key from a key server' do
+  xit 'should install a public key from a key server' do
     pp = <<-EOS
       gnupg_key { 'root_key_foo':
         ensure    => present,
@@ -76,14 +76,14 @@ describe 'install gnupg keys' do
   end
 
 
-  it 'should delete public key 20BC0A86' do
-    scp_to master, 'files/random.key', '/tmp/random.key'
-    gpg("--import /tmp/random.key") {}
+  it 'should delete a public key' do
+    scp_to master, 'files/random.public.key', '/tmp/random.public.key'
+    gpg("--import /tmp/random.public.key") {}
 
     pp = <<-EOS
       gnupg_key { 'bye_bye_key':
         ensure => absent,
-        key_id => 20BC0A86,
+        key_id => 926FA9B9,
         user   => root,
       }
     EOS
@@ -92,8 +92,8 @@ describe 'install gnupg keys' do
     apply_manifest(pp, :catch_changes => true)
 
     # check that gnupg deleted the key
-    gpg("--list-keys 20BC0A86", :acceptable_exit_codes => [0, 2]) do |r|
-      expect(r.stdout).to_not match(/20BC0A86/)
+    gpg("--list-keys 926FA9B9", :acceptable_exit_codes => [0, 2]) do |r|
+      expect(r.stdout).to_not match(/926FA9B9/)
     end
   end
 
@@ -220,5 +220,36 @@ describe 'install gnupg keys' do
 
     # clean up
     gpg("--batch --delete-secret-key 7F2A6D3944CDFE31A47ECC2A60135C26926FA9B9")
+  end
+
+  it 'should delete a private key' do
+    scp_to master, 'files/random.private.key', '/tmp/random.private.key'
+    gpg("--import /tmp/random.private.key") {}
+
+    pp = <<-EOS
+      gnupg_key { 'bye_bye_key':
+        ensure   => absent,
+        user     => root,
+        key_id   => 926FA9B9,
+        key_type => private
+      }
+    EOS
+
+    apply_manifest(pp, :catch_failures => true)
+    apply_manifest(pp, :catch_changes => true)
+
+    # check that gnupg deleted the public key
+    gpg("--list-secret-keys 926FA9B9", :acceptable_exit_codes => [0, 2]) do |r|
+      expect(r.stdout).to_not match(/926FA9B9/)
+    end
+
+    # check that gnupg left the public key
+    gpg("--list-keys 926FA9B9") do |r|
+      expect(r.stdout).to match(/926FA9B9/)
+      expect(r.exit_code).to eq(0)
+    end
+
+    # clean up
+    gpg("--batch --delete-key 7F2A6D3944CDFE31A47ECC2A60135C26926FA9B9")
   end
 end
