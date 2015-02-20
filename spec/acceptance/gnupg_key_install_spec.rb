@@ -219,7 +219,33 @@ describe 'install gnupg keys' do
     end
 
     # clean up
-    gpg("--batch --delete-secret-key 7F2A6D3944CDFE31A47ECC2A60135C26926FA9B9")
+    gpg("--batch --delete-secret-and-public-key 7F2A6D3944CDFE31A47ECC2A60135C26926FA9B9")
+  end
+
+  it 'should install private key from a local file URL address' do
+    scp_to master, 'files/random.private.key', '/tmp/random.private.key'
+
+    pp = <<-EOS
+      gnupg_key { 'add_private_key_by_local_file_path':
+        ensure     => present,
+        user       => root,
+        key_id     => 926FA9B9,
+        key_type   => private,
+        key_source => 'file:///tmp/random.private.key'
+      }
+    EOS
+
+    apply_manifest(pp, :catch_failures => true)
+    apply_manifest(pp, :catch_changes => true)
+
+    # check that gnupg installed the key
+    gpg("--list-secret-keys 926FA9B9") do |r|
+      expect(r.stdout).to match(/926FA9B9/)
+      expect(r.exit_code).to eq(0)
+    end
+
+    # clean up
+    gpg("--batch --delete-secret-and-public-key 7F2A6D3944CDFE31A47ECC2A60135C26926FA9B9")
   end
 
   it 'should delete a private key' do
