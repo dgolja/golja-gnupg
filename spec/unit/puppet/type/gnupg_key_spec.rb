@@ -78,4 +78,26 @@ describe Puppet::Type.type(:gnupg_key) do
       Puppet::Type.type(:gnupg_key).new(:name => "key", :ensure => 'present', :key_type => 'both', :key_source => "http://www.example.com")
     }.to raise_error(/A key type of 'both' is invalid when ensure is 'present'\./)
   end
+  it "should allow key_content with armored public key" do
+    key = File.read('files/random.public.key')
+    resource = Puppet::Type.type(:gnupg_key).new(:name => "key", :key_type => 'public', :key_content => key)
+    resource[:key_content].should == key
+  end
+  it "should allow key_content with armored private key" do
+    key = File.read('files/random.private.key')
+    resource = Puppet::Type.type(:gnupg_key).new(:name => "key", :key_type => 'private', :key_content => key)
+    resource[:key_content].should == key
+  end
+  it "should not allow key_content that does not look like a public key when key_type is public" do
+    key = "I am not a public key"
+    expect {
+      Puppet::Type.type(:gnupg_key).new(:name => "key", :key_type => 'public', :key_content => key)
+    }.to raise_error(/Provided key content does not look like a public key\./)
+  end
+  it "should not allow key_content that does not look like a private key when key_type is private" do
+    key = "I am not a private key"
+    expect {
+      Puppet::Type.type(:gnupg_key).new(:name => "key", :key_type => 'private', :key_content => key)
+    }.to raise_error(/Provided key content does not look like a private key\./)
+  end
 end

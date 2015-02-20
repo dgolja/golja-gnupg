@@ -47,6 +47,8 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
       add_key_from_key_server
     elsif ! resource[:key_source].nil?
       add_key_from_key_source
+    elsif ! resource[:key_content].nil?
+      add_key_from_key_content
     end
   end
 
@@ -64,6 +66,16 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
       add_key_at_path
     else
       add_key_at_url
+    end
+  end
+
+  def add_key_from_key_content
+    path = create_temporary_file(user_id, resource[:key_content])
+    command = "gpg --import #{path}"
+    begin
+      output = Puppet::Util::Execution.execute(command, :uid => user_id, :failonfail => true)
+    rescue Puppet::ExecutionFailure => e
+      raise Puppet::Error, "Error while importing key #{resource[:key_id]} using key content:\n#{output}}"
     end
   end
 
@@ -88,12 +100,8 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
     when /http/
       command = "gpg --fetch-keys #{resource[:key_source]}"
     when 'puppet'
-      Puppet::Util::SUIDManager.asuser(user_id) do
-        tmpfile = Tempfile.open(['golja-gnupg', 'key'])
-        tmpfile.write(puppet_content)
-        tmpfile.flush
-        command = "gpg --import #{tmpfile.path.to_s}"
-      end
+      path = create_temporary_file user_id, puppet_content
+      command = "gpg --import #{path}"
     end
     begin
       output = Puppet::Util::Execution.execute(command, :uid => user_id, :failonfail => true)
@@ -107,6 +115,15 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
       Etc.getpwnam(resource[:user]).uid
     rescue => e
       raise Puppet::Error, "User #{resource[:user]} does not exists"
+    end
+  end
+
+  def create_temporary_file user_id, content
+    Puppet::Util::SUIDManager.asuser(user_id) do
+      tmpfile = Tempfile.open(['golja-gnupg', 'key'])
+      tmpfile.write(content)
+      tmpfile.flush
+      break tmpfile.path.to_s
     end
   end
 
