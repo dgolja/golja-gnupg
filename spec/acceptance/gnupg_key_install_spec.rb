@@ -223,6 +223,7 @@ describe 'install gnupg keys' do
   end
 
   it 'should delete a private key' do
+    # importing a private key imports the public key as well
     scp_to master, 'files/random.private.key', '/tmp/random.private.key'
     gpg("--import /tmp/random.private.key") {}
 
@@ -251,5 +252,33 @@ describe 'install gnupg keys' do
 
     # clean up
     gpg("--batch --delete-key 7F2A6D3944CDFE31A47ECC2A60135C26926FA9B9")
+  end
+
+  it 'should delete both public and private key for key_id' do
+    # importing a private key imports the public key as well
+    scp_to master, 'files/random.private.key', '/tmp/random.private.key'
+    gpg("--import /tmp/random.private.key") {}
+
+    pp = <<-EOS
+      gnupg_key { 'bye_bye_key':
+        ensure   => absent,
+        user     => root,
+        key_id   => 926FA9B9,
+        key_type => both
+      }
+    EOS
+
+    apply_manifest(pp, :catch_failures => true)
+    apply_manifest(pp, :catch_changes => true)
+
+    # check that gnupg deleted the public key
+    gpg("--list-secret-keys 926FA9B9", :acceptable_exit_codes => [0, 2]) do |r|
+      expect(r.stdout).to_not match(/926FA9B9/)
+    end
+
+    # check that gnupg left the public key
+    gpg("--list-keys 926FA9B9", :acceptable_exit_codes => [0, 2]) do |r|
+      expect(r.stdout).to_not match(/926FA9B9/)
+    end
   end
 end
