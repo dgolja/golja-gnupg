@@ -11,6 +11,7 @@ describe 'install gnupg keys' do
       gnupg_key { 'jenkins_key':
         ensure     => present,
         user       => 'root',
+        key_type   => public,
         key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
         key_id     => 'D50582E6',
       }
@@ -34,6 +35,7 @@ describe 'install gnupg keys' do
       gnupg_key { 'newrelic_key':
         ensure     => present,
         user       => 'root',
+        key_type   => public,
         key_source => 'https://download.newrelic.com/548C16BF.gpg',
         key_id     => '548C16BF',
       }
@@ -57,6 +59,7 @@ describe 'install gnupg keys' do
       gnupg_key { 'root_key_foo':
         ensure    => present,
         user      => 'root',
+        key_type   => public,
         key_server => 'hkp://pgp.mit.edu/',
         key_id     => '20BC0A86',
       }
@@ -83,8 +86,9 @@ describe 'install gnupg keys' do
     pp = <<-EOS
       gnupg_key { 'bye_bye_key':
         ensure => absent,
-        key_id => 926FA9B9,
         user   => root,
+        key_type   => public,
+        key_id => 926FA9B9,
       }
     EOS
 
@@ -101,8 +105,9 @@ describe 'install gnupg keys' do
     pp = <<-EOS
       gnupg_key { 'add_key_by_remote_source':
         ensure     => present,
-        key_id     => 926FA9B9,
         user       => root,
+        key_type   => public,
+        key_id     => 926FA9B9,
         key_source => "puppet:///modules/gnupg/random.public.key",
       }
     EOS
@@ -126,8 +131,9 @@ describe 'install gnupg keys' do
     pp = <<-EOS
       gnupg_key { 'add_key_by_local_file_path':
         ensure     => present,
-        key_id     => 926FA9B9,
         user       => root,
+        key_type   => public,
+        key_id     => 926FA9B9,
         key_source => "/tmp/random.public.key",
       }
     EOS
@@ -151,8 +157,9 @@ describe 'install gnupg keys' do
     pp = <<-EOS
       gnupg_key { 'add_key_by_local_file_url':
         ensure     => present,
-        key_id     => 926FA9B9,
         user       => root,
+        key_type   => public,
+        key_id     => 926FA9B9,
         key_source => "file:///tmp/random.public.key",
       }
     EOS
@@ -175,6 +182,7 @@ describe 'install gnupg keys' do
       gnupg_key { 'jenkins_key':
         ensure     => present,
         user       => 'root',
+        key_type   => public,
         key_source => '/santa/claus/does/not/exists/org/sorry/kids.key',
         key_id     => '40404040',
       }
@@ -188,6 +196,7 @@ describe 'install gnupg keys' do
       gnupg_key { 'jenkins_key':
         ensure     => present,
         user       => 'root',
+        key_type   => public,
         key_source => 'http://foo.com/key-not-there.key',
         key_id     => '40404040',
       }
