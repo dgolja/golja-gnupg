@@ -54,7 +54,7 @@ describe 'install gnupg keys' do
     gpg("--batch --delete-key B60A3EC9BC013B9C23790EC8B31B29E5548C16BF") {}
   end
 
-  xit 'should install a public key from a key server' do
+  it 'should install a public key from a key server' do
     pp = <<-EOS
       gnupg_key { 'root_key_foo':
         ensure    => present,
