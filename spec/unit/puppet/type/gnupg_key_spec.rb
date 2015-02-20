@@ -57,4 +57,29 @@ describe Puppet::Type.type(:gnupg_key) do
       }.to raise_error(/Invalid key id*/)
     end
   end
+  [:public, :private, :both].each do |val|
+    it "should allow key_type with #{val}" do
+      @gnupg_key[:key_type] = val
+      @gnupg_key[:key_type].should == val
+    end
+  end
+  it "should have a key_type of public by default" do
+    @gnupg_key[:key_type].should == :public
+  end
+  [:special, :other].each do |val|
+    it "should not allow invalid key_type of #{val}" do
+      expect {
+        @gnupg_key[:key_type] = val
+      }.to raise_error(Puppet::Error)
+    end
+  end
+  it "should not allow key_type of both when ensure is present" do
+    expect {
+      Puppet::Type.type(:gnupg_key)
+        .new(:name => "key",
+             :ensure => 'present',
+             :key_type => 'both',
+             :key_source => "http://www.example.com")
+    }.to raise_error(/A key type of 'both' is invalid when ensure is 'present'\./)
+  end
 end

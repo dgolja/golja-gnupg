@@ -99,11 +99,11 @@ describe 'install gnupg keys' do
 
   it 'should install public key from the puppet fileserver/module repository' do
     pp = <<-EOS
-      gnupg_key {'add_key_by_remote_source':
+      gnupg_key { 'add_key_by_remote_source':
         ensure     => present,
-        key_id     => 20BC0A86,
+        key_id     => 926FA9B9,
         user       => root,
-        key_source => "puppet:///modules/gnupg/random.key",
+        key_source => "puppet:///modules/gnupg/random.public.key",
       }
     EOS
 
@@ -111,24 +111,24 @@ describe 'install gnupg keys' do
     apply_manifest(pp, :catch_changes => true)
 
     # check that gnupg installed the key
-    gpg("--list-keys 20BC0A86") do |r|
-      expect(r.stdout).to match(/20BC0A86/)
+    gpg("--list-keys 926FA9B9") do |r|
+      expect(r.stdout).to match(/926FA9B9/)
       expect(r.exit_code).to eq(0)
     end
 
     # clean up
-    gpg("--batch --delete-key 58AA73E230EB06B2A2DE8A873CCE8BC520BC0A86") {}
+    gpg("--batch --delete-key 7F2A6D3944CDFE31A47ECC2A60135C26926FA9B9") {}
   end
 
   it 'should install public key from a local file path' do
-    scp_to master, 'files/random.key', '/tmp/random.key'
+    scp_to master, 'files/random.public.key', '/tmp/random.public.key'
 
     pp = <<-EOS
-      gnupg_key {'add_key_by_local_file_path':
+      gnupg_key { 'add_key_by_local_file_path':
         ensure     => present,
-        key_id     => 20BC0A86,
+        key_id     => 926FA9B9,
         user       => root,
-        key_source => "/tmp/random.key",
+        key_source => "/tmp/random.public.key",
       }
     EOS
 
@@ -136,24 +136,24 @@ describe 'install gnupg keys' do
     apply_manifest(pp, :catch_changes => true)
 
     # check that gnupg installed the key
-    gpg("--list-keys 20BC0A86") do |r|
-      expect(r.stdout).to match(/20BC0A86/)
+    gpg("--list-keys 926FA9B9") do |r|
+      expect(r.stdout).to match(/926FA9B9/)
       expect(r.exit_code).to eq(0)
     end
 
     # clean up
-    gpg("--batch --delete-key 58AA73E230EB06B2A2DE8A873CCE8BC520BC0A86") {}
+    gpg("--batch --delete-key 7F2A6D3944CDFE31A47ECC2A60135C26926FA9B9") {}
   end
 
   it 'should install public key from a local file URL address' do
-    scp_to master, 'files/random.key', '/tmp/random.key'
+    scp_to master, 'files/random.public.key', '/tmp/random.public.key'
 
     pp = <<-EOS
-      gnupg_key {'add_key_by_local_file_path':
+      gnupg_key { 'add_key_by_local_file_url':
         ensure     => present,
-        key_id     => 20BC0A86,
+        key_id     => 926FA9B9,
         user       => root,
-        key_source => "file:///tmp/random.key",
+        key_source => "file:///tmp/random.public.key",
       }
     EOS
 
@@ -161,13 +161,13 @@ describe 'install gnupg keys' do
     apply_manifest(pp, :catch_changes => true)
 
     # check that gnupg installed the key
-    gpg("--list-keys 20BC0A86") do |r|
-      expect(r.stdout).to match(/20BC0A86/)
+    gpg("--list-keys 926FA9B9") do |r|
+      expect(r.stdout).to match(/926FA9B9/)
       expect(r.exit_code).to eq(0)
     end
 
     # clean up
-    gpg("--batch --delete-key 58AA73E230EB06B2A2DE8A873CCE8BC520BC0A86") {}
+    gpg("--batch --delete-key 7F2A6D3944CDFE31A47ECC2A60135C26926FA9B9") {}
   end
 
   it 'should not install a key, because local resource does not exists' do
@@ -194,5 +194,31 @@ describe 'install gnupg keys' do
     EOS
 
     apply_manifest(pp, :expect_failures => true)
+  end
+
+  it 'should install private key from a local file path' do
+    scp_to master, 'files/random.private.key', '/tmp/random.private.key'
+
+    pp = <<-EOS
+      gnupg_key { 'add_private_key_by_local_file_path':
+        ensure     => present,
+        user       => root,
+        key_id     => 926FA9B9,
+        key_type   => private,
+        key_source => '/tmp/random.private.key'
+      }
+    EOS
+
+    apply_manifest(pp, :catch_failures => true)
+    apply_manifest(pp, :catch_changes => true)
+
+    # check that gnupg installed the key
+    gpg("--list-secret-keys 926FA9B9") do |r|
+      expect(r.stdout).to match(/926FA9B9/)
+      expect(r.exit_code).to eq(0)
+    end
+
+    # clean up
+    gpg("--batch --delete-secret-key 7F2A6D3944CDFE31A47ECC2A60135C26926FA9B9")
   end
 end

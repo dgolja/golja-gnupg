@@ -25,50 +25,66 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
     end
   end
 
+
   # where most of the magic happens
   # TODO implement dry-run to check if the key_id match the content of the file
-  def add_public_key
+  def add_key
     if ! resource[:key_server].nil?
-      command = "gpg --keyserver #{resource[:key_server]} --recv-keys #{resource[:key_id]}"
-      begin
-        output = Puppet::Util::Execution.execute(command,  :uid => user_id, :failonfail => true)
-      rescue Puppet::ExecutionFailure => e
-        raise Puppet::Error, "Key #{resource[:key_id]} does not exsist on #{resource[:key_server]}"
-      end
-
+      add_key_from_key_server
     elsif ! resource[:key_source].nil?
-      if Puppet::Util.absolute_path?(resource[:key_source])
-        if File.file?(resource[:key_source])
-          command = "gpg --import #{resource[:key_source]}"
-          begin
-            output = Puppet::Util::Execution.execute(command, :uid => user_id, :failonfail => true)
-          rescue Puppet::ExecutionFailure => e
-            raise Puppet::Error, "Error while importing key #{resource[:key_id]} from #{resource[:key_source]}"
-          end
-        elsif
-          raise Puppet::Error, "Local file #{resource[:key_source]} for #{resource[:key_id]} does not exists"
-        end
-      else
-        uri = URI.parse(URI.escape(resource[:key_source]))
-        case uri.scheme
-          when /https/
-            command = "wget -O- #{resource[:key_source]} | gpg --import"
-          when /http/
-            command = "gpg --fetch-keys #{resource[:key_source]}"
-          when 'puppet'
-            Puppet::Util::SUIDManager.asuser(user_id) do
-              tmpfile = Tempfile.open(['golja-gnupg', 'key'])
-              tmpfile.write(puppet_content)
-              tmpfile.flush
-              command = "gpg --import #{tmpfile.path.to_s}"
-            end
-        end
-        begin
-          output = Puppet::Util::Execution.execute(command, :uid => user_id, :failonfail => true)
-        rescue Puppet::ExecutionFailure => e
-          raise Puppet::Error, "Error while importing key #{resource[:key_id]} from #{resource[:key_source]}:\n#{output}}"
-        end
+      add_key_from_key_source
+    end
+  end
+
+  def add_key_from_key_server
+    command = "gpg --keyserver #{resource[:key_server]} --recv-keys #{resource[:key_id]}"
+    begin
+      output = Puppet::Util::Execution.execute(command,  :uid => user_id, :failonfail => true)
+    rescue Puppet::ExecutionFailure => e
+      raise Puppet::Error, "Key #{resource[:key_id]} does not exist on #{resource[:key_server]}"
+    end
+  end
+
+  def add_key_from_key_source
+    if Puppet::Util.absolute_path?(resource[:key_source])
+      add_key_at_path
+    else
+      add_key_at_url
+    end
+  end
+
+  def add_key_at_path
+    if File.file?(resource[:key_source])
+      command = "gpg --import #{resource[:key_source]}"
+      begin
+        output = Puppet::Util::Execution.execute(command, :uid => user_id, :failonfail => true)
+      rescue Puppet::ExecutionFailure => e
+        raise Puppet::Error, "Error while importing key #{resource[:key_id]} from #{resource[:key_source]}"
       end
+    elsif
+      raise Puppet::Error, "Local file #{resource[:key_source]} for #{resource[:key_id]} does not exists"
+    end
+  end
+
+  def add_key_at_url
+    uri = URI.parse(URI.escape(resource[:key_source]))
+    case uri.scheme
+    when /https/
+      command = "wget -O- #{resource[:key_source]} | gpg --import"
+    when /http/
+      command = "gpg --fetch-keys #{resource[:key_source]}"
+    when 'puppet'
+      Puppet::Util::SUIDManager.asuser(user_id) do
+        tmpfile = Tempfile.open(['golja-gnupg', 'key'])
+        tmpfile.write(puppet_content)
+        tmpfile.flush
+        command = "gpg --import #{tmpfile.path.to_s}"
+      end
+    end
+    begin
+      output = Puppet::Util::Execution.execute(command, :uid => user_id, :failonfail => true)
+    rescue Puppet::ExecutionFailure => e
+      raise Puppet::Error, "Error while importing key #{resource[:key_id]} from #{resource[:key_source]}:\n#{output}}"
     end
   end
 
@@ -90,7 +106,12 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   end
 
   def exists?
-    command = "gpg --list-keys --with-colons #{resource[:key_id]}"
+    if resource[:key_type] == :public
+      command = "gpg --list-keys --with-colons #{resource[:key_id]}"
+    elsif resource[:key_type] == :private
+      command = "gpg --list-secret-keys --with-colons #{resource[:key_id]}"
+    end
+
     output = Puppet::Util::Execution.execute(command, :uid => user_id)
     if output.exitstatus == 0
       return true
@@ -102,7 +123,7 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   end
 
   def create
-    add_public_key()
+    add_key()
   end
 
   def destroy

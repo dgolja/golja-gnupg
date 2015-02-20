@@ -18,6 +18,7 @@ Puppet::Type.newtype(:gnupg_key) do
 
     raise ArgumentError, "You cannot specify more than one of #{KEY_SOURCES.collect { |p| p.to_s}.join(", ")}, much to learn, you still have." if creator_count > 1
     raise ArgumentError, "You need to specify at least one of #{KEY_SOURCES.collect { |p| p.to_s}.join(", ")}, much to learn, you still have." if creator_count == 0 and self['ensure'] == :present
+    raise ArgumentError, "A key type of 'both' is invalid when ensure is 'present'." if self[:ensure] == :present && self[:key_type] == :both
   end
 
   newparam(:name, :namevar=>true) do
@@ -104,6 +105,14 @@ Puppet::Type.newtype(:gnupg_key) do
       value.upcase.intern
     end
 
+  end
+
+  newparam(:key_type) do
+    desc "The type of the key(s) being managed."
+
+    newvalues(:public, :private, :both)
+
+    defaultto :public
   end
 
 end
