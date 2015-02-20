@@ -75,11 +75,7 @@ describe Puppet::Type.type(:gnupg_key) do
   end
   it "should not allow key_type of both when ensure is present" do
     expect {
-      Puppet::Type.type(:gnupg_key)
-        .new(:name => "key",
-             :ensure => 'present',
-             :key_type => 'both',
-             :key_source => "http://www.example.com")
+      Puppet::Type.type(:gnupg_key).new(:name => "key", :ensure => 'present', :key_type => 'both', :key_source => "http://www.example.com")
     }.to raise_error(/A key type of 'both' is invalid when ensure is 'present'\./)
   end
 end
