@@ -20,9 +20,10 @@ end
 UNSUPPORTED_PLATFORMS = ['Suse','windows','AIX','Solaris']
 
 module LocalHelpers
-  def gpg(gpg_cmd, user = 'root', &block)
+  def gpg(gpg_cmd, options = {:user => 'root', :acceptable_exit_codes => [0]}, &block)
+    user = options.delete(:user)
     gpg = "gpg #{gpg_cmd}"
-    shell("su #{user} -c \"#{gpg}\"", &block)
+    shell("su #{user} -c \"#{gpg}\"", options, &block)
   end
 end
 

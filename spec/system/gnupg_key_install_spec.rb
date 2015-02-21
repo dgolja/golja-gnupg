@@ -8,13 +8,13 @@ describe 'gnupg_key install' do
     end
   end
 
-  it 'should install a key from a HTTP URL address' do
+  it 'should install a public key from a HTTP URL address' do
     pp = <<-EOS.unindent
       gnupg_key { 'jenkins_key':
         ensure     => present,
         user       => 'root',
         key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
-        key_id     => 'D50582E6', 
+        key_id     => 'D50582E6',
       }
     EOS
 
@@ -32,7 +32,7 @@ describe 'gnupg_key install' do
     end
   end
 
-  it 'should install a key from a HTTPS URL address' do
+  it 'should install a public key from a HTTPS URL address' do
     pp = <<-EOS.unindent
       gnupg_key { 'newrelic_key':
         ensure     => present,
@@ -56,7 +56,7 @@ describe 'gnupg_key install' do
     end
   end
 
-  it 'should install a key from a key server' do
+  it 'should install a public key from a key server' do
     pp = <<-EOS.unindent
       gnupg_key { 'root_key_foo':
         ensure    => present,
@@ -80,7 +80,7 @@ describe 'gnupg_key install' do
     end
   end
 
-  it 'should remove key 20BC0A86' do
+  it 'should remove public key 20BC0A86' do
     pp = <<-EOS.unindent
       gnupg_key { 'bye_bye_key':
         ensure => absent,
@@ -96,7 +96,7 @@ describe 'gnupg_key install' do
     end
   end
 
-  it 'should install key from the puppet fileserver/module repository' do
+  it 'should install public key from the puppet fileserver/module repository' do
     pp = <<-EOS.unindent
       gnupg_key {'add_key_by_remote_source':
         ensure     => present,
@@ -120,7 +120,7 @@ describe 'gnupg_key install' do
     end
   end
 
-  it 'should not install a key, because local resource does not exists' do
+  it 'should not install a public key, because local resource does not exists' do
     pp = <<-EOS.unindent
       gnupg_key { 'jenkins_key':
         ensure     => present,
@@ -135,7 +135,7 @@ describe 'gnupg_key install' do
     end
   end
 
-  it 'should fail because there is no content on the URL address' do
+  it 'should fail to install a public key, because there is no content at the supplied URL address' do
     pp = <<-EOS.unindent
       gnupg_key { 'jenkins_key':
         ensure     => present,
