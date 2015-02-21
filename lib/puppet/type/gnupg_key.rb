@@ -5,10 +5,15 @@ Puppet::Type.newtype(:gnupg_key) do
   ensurable
 
   autorequire(:package) do
-     ["gnupg", "gnupg2"]
-   end
+    ["gnupg", "gnupg2"]
+  end
 
-  KEY_SOURCES = [:key_source, :key_server]
+  KEY_SOURCES = [:key_source, :key_server, :key_content]
+
+  KEY_CONTENT_REGEXES = {
+    :public => ["-----BEGIN PGP PUBLIC KEY BLOCK-----", "-----END PGP PUBLIC KEY BLOCK-----"],
+    :private => ["-----BEGIN PGP PRIVATE KEY BLOCK-----", "-----END PGP PRIVATE KEY BLOCK-----"]
+  }
 
   validate do
     creator_count = 0
@@ -16,9 +21,32 @@ Puppet::Type.newtype(:gnupg_key) do
       creator_count += 1 if ! self[param].nil?
     end
 
-    raise ArgumentError, "You cannot specify more than one of #{KEY_SOURCES.collect { |p| p.to_s}.join(", ")}, much to learn, you still have." if creator_count > 1
-    raise ArgumentError, "You need to specify at least one of #{KEY_SOURCES.collect { |p| p.to_s}.join(", ")}, much to learn, you still have." if creator_count == 0 and self['ensure'] == :present
-    raise ArgumentError, "A key type of 'both' is invalid when ensure is 'present'." if self[:ensure] == :present && self[:key_type] == :both
+    if creator_count > 1
+      raise ArgumentError, "You cannot specify more than one of #{KEY_SOURCES.collect { |p| p.to_s}.join(", ")}, " +
+        "much to learn, you still have."
+    end
+
+    if creator_count == 0 && self[:ensure] == :present
+      raise ArgumentError, "You need to specify at least one of #{KEY_SOURCES.collect { |p| p.to_s}.join(", ")}, " +
+        "much to learn, you still have."
+    end
+
+    if self[:ensure] == :present && self[:key_type] == :both
+      raise ArgumentError, "A key type of 'both' is invalid when ensure is 'present'."
+    end
+
+    [:public, :private].each do |type|
+      if self[:key_content] && self[:key_type] == type
+        key_lines = self[:key_content].strip.lines.to_a
+
+        first_line = key_lines.first.strip
+        last_line = key_lines.last.strip
+
+        unless first_line == KEY_CONTENT_REGEXES[type][0] && last_line == KEY_CONTENT_REGEXES[type][1]
+          raise ArgumentError, "Provided key content does not look like a #{type} key."
+        end
+      end
+    end
   end
 
   newparam(:name, :namevar=>true) do
@@ -83,12 +111,17 @@ Puppet::Type.newtype(:gnupg_key) do
       if server
         uri = URI.parse(URI.escape(server))
         unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS) ||
-          uri.is_a?(URI::LDAP) || %w{hkp}.include?(uri.scheme)
+            uri.is_a?(URI::LDAP) || %w{hkp}.include?(uri.scheme)
           raise ArgumentError, "Invalid keyserver value #{server}"
         end
       end
     end
 
+  end
+
+  newparam(:key_content) do
+    desc "Key content. The result of exporting the key using ASCII armor.
+      Can be either a public or private key."
   end
 
   newparam(:key_id) do
@@ -104,7 +137,6 @@ Puppet::Type.newtype(:gnupg_key) do
     munge do |value|
       value.upcase.intern
     end
-
   end
 
   newparam(:key_type) do
@@ -114,5 +146,4 @@ Puppet::Type.newtype(:gnupg_key) do
 
     defaultto :public
   end
-
 end
