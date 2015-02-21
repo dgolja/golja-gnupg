@@ -1,4 +1,12 @@
-2013-10-20 - Dejan Golja <dejan@golja.org> - 1.0.0
+2015-02-21 - Dejan Golja <dejan@golja.org> - 1.1.0
+* properly supports private key (added new paramater key_type
+  for gnupg_key type)
+* added new parameter key_content for gnupg_key type
+  to make it easier integrate hiera lookups. More info check README
+
+Special thanks to Tobias Clemson (https://github.com/tobyclemson)
+
+2014-10-20 - Dejan Golja <dejan@golja.org> - 1.0.0
 * remove support for puppet 2.7.x due to the native type
 * added beaker system spec tests
 * Update type definition so it uses Puppet::Util::Execution.execute
