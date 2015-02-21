@@ -203,6 +203,23 @@ describe 'install gnupg keys' do
     gpg("--batch --delete-key 7F2A6D3944CDFE31A47ECC2A60135C26926FA9B9") {}
   end
 
+
+  it 'should not install public key using string because key content is invalid' do
+    key = File.read('files/broken.public.key')
+
+    pp = <<-EOS
+      gnupg_key { 'public_key_from_invalid_string_content':
+        ensure      => present,
+        user        => root,
+        key_id      => 926FA9B9,
+        key_type    => public,
+        key_content => "#{key}"
+      }
+    EOS
+
+    apply_manifest(pp, :expect_failures => true)
+  end
+
   it 'should not install a key, because local resource does not exists' do
     pp = <<-EOS
       gnupg_key { 'jenkins_key':
