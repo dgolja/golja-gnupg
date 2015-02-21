@@ -11,6 +11,7 @@ group :development, :test do
 end
 
 group :system_tests do
+  gem 'beaker', '~> 2.4',    :require => false
   gem 'beaker-rspec',        :require => false
   gem 'serverspec',          :require => false
   gem 'rspec-system-puppet', :require => false
