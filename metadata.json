@@ -1,4 +1,12 @@
 {
+  "name": "golja-gnupg",
+  "version": "1.1.0",
+  "author": "Dejan Golja",
+  "summary": "Manage gnupg package and public keys",
+  "license": "Apache-2.0",
+  "source": "git://github.com/n1tr0g/golja-gnupg.git",
+  "project_page": "https://github.com/n1tr0g/golja-gnupg",
+  "issues_url": "https://github.com/n1tr0g/golja-gnupg/issues",
   "operatingsystem_support": [
     {
       "operatingsystem": "RedHat",
@@ -42,15 +50,11 @@
       "version_requirement": ">=3.0.0 <4.0.0"
     }
   ],
-  "author": "Dejan Golja",
-  "dependencies": [
+  "tags": [
+    "gnupg",
+    "pgp"
   ],
-  "license": "Apache-2.0",
-  "name": "golja-gnupg",
-  "project_page": "https://github.com/n1tr0g/golja-gnupg",
-  "source": "git://github.com/n1tr0g/golja-gnupg.git",
-  "summary": "Manage gnupg package and public keys",
-  "version": "1.0.0",
-  "tags": ["gnupg", "pgp"],
-  "issues_url": "https://github.com/n1tr0g/golja-gnupg/issues"
+  "dependencies": [
+  
+  ]
 }
