@@ -18,7 +18,7 @@ Puppet::Type.newtype(:gnupg_key) do
   validate do
     creator_count = 0
     KEY_SOURCES.each do |param|
-      creator_count += 1 if ! self[param].nil?
+      creator_count += 1 unless self[param].nil?
     end
 
     if creator_count > 1
@@ -49,7 +49,7 @@ Puppet::Type.newtype(:gnupg_key) do
     end
   end
 
-  newparam(:name, :namevar=>true) do
+  newparam(:name, :namevar => true) do
     desc "This attribute is currently used as a
       system-wide primary key - namevar and therefore has to be unique."
   end

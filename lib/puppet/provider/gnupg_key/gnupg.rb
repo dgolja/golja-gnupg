@@ -43,11 +43,11 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   # where most of the magic happens
   # TODO implement dry-run to check if the key_id match the content of the file
   def add_key
-    if ! resource[:key_server].nil?
+    if resource[:key_server]
       add_key_from_key_server
-    elsif ! resource[:key_source].nil?
+    elsif resource[:key_source]
       add_key_from_key_source
-    elsif ! resource[:key_content].nil?
+    elsif resource[:key_content]
       add_key_from_key_content
     end
   end
