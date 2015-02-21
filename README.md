@@ -38,6 +38,7 @@ gnupg_key { 'hkp_server_20BC0A86':
   key_id     => '20BC0A86',
   user       => 'root',
   key_server => 'hkp://pgp.mit.edu/',
+  key_type   => public,
 }
 ```
 
@@ -49,6 +50,7 @@ gnupg_key { 'jenkins_foo_key':
   key_id     => 'D50582E6',
   user       => 'foo',
   key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
+  key_type   => public,
 }
 ```
 
@@ -59,19 +61,45 @@ gnupg_key { 'jenkins_foo_key':
   ensure     => present,
   key_id     => 'D50582E6',
   user       => 'foo',
-  key_source => '"puppet:///modules/gnupg/D50582E6.key",',
+  key_source => 'puppet:///modules/gnupg/D50582E6.key',
+  key_type   => public,
 }
 ```
+
+####Add public key D50582E6 from puppet fileserver to user bar via a string value
+
+```puppet
+gnupg_key { 'jenkins_foo_key':
+  ensure      => present,
+  key_id      => 'D50582E6',
+  user        => 'bar',
+  key_content => '-----BEGIN BROKEN PUBLIC KEY BLOCK-----...',
+  key_type    => public,
+}
+```
+*Note*: You should use hiera lookup to get the key content
 
 ####Remove public key 20BC0A86 from user root
 
 ```puppet
 gnupg_key {'root_remove':
-  ensure => absent,
-  key_id => '20BC0A86',
-  user   => 'root',
+  ensure   => absent,
+  key_id   => '20BC0A86',
+  user     => 'root',
+  key_type => public,
 }
-```    
+```
+
+###Remove both private and public key 20BC0A66
+
+```puppet
+gnupg_key {'root_remove':
+  ensure   => absent,
+  key_id   => '20BC0A66',
+  user     => 'root',
+  key_type => both,
+}
+```
 
 ##Reference
 
@@ -108,7 +136,7 @@ values.
 
 #####`key_source`
 
-**REQUIRED** if `key_server` is not defined and `ensure` is present.
+**REQUIRED** if `key_server` or `key_content` is not defined and `ensure` is present.
 A source file containing PGP key. Values can be URIs pointing to remote files,
 or fully qualified paths to files available on the local system.
 
@@ -120,10 +148,27 @@ puppet:///modules/name_of_module/filename
 
 #####`key_server`
 
-**REQUIRED** if `key_source` is not defined and `ensure` is present.
+**REQUIRED** if `key_source` or `key_content` is not defined and `ensure` is present.
 
 PGP key server from where to retrieve the public key. Valid URI schemes are
 *http*, *https*, *ldap* and *hkp*.
+
+#####`key_content`
+
+**REQUIRED** if `key_server` or `key_source` is not defined and `ensure` is present.
+
+Provide the content of the key as a string. This is useful when the key is stored as a
+hiera property and the consumer doesn't want to have to write that content to a file
+before the gnupg_key resource executes.
+
+
+#####`key_type`
+
+**OPTIONAL** - key type. Valid values (public|private|both). Default: public
+
+PGP key server from where to retrieve the public key. Valid URI schemes are
+*http*, *https*, *ldap* and *hkp*.
+
 
 ### Tests
 
