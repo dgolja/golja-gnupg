@@ -60,7 +60,7 @@ Puppet::Type.newtype(:gnupg_key) do
 
     validate do |value|
       # freebsd/linux username limitation
-      unless value =~ /^[a-z_][a-z0-9_]+$/
+      unless value =~ /^[a-z_][a-z0-9_-]*[$]?/
         raise ArgumentError, "Invalid username format for #{value}"
       end
     end

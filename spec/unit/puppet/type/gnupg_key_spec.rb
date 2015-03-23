@@ -27,6 +27,9 @@ describe Puppet::Type.type(:gnupg_key) do
       @gnupg_key[:user] = '1foo'
     }.to raise_error(Puppet::Error, /Invalid username format for*/)
   end
+  it 'should accept user names with dashes' do
+    @gnupg_key[:user] = 'foo-bar'
+  end
   ['http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key', 'ldap://keys.puppetlabs.com', 'hkp://pgp.mit.edu/'].each do |val|
     it "should accept key_server #{val}" do
       @gnupg_key[:key_server] = val
