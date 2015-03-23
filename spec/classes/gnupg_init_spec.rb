@@ -2,14 +2,6 @@ require 'spec_helper'
 
 describe 'gnupg', :type => :class do
 
-  context 'on unsupported distributions' do
-    let(:facts) {{ :osfamily => 'Unsupported' }}
-
-    it 'we fail' do
-      expect { subject }.to raise_error(/Osfamily Unsupported is not supported/)
-    end
-  end
-
   ['RedHat', 'Debian', 'Linux'].each do |system|
     if system == 'Linux'
       let(:facts) {{ :osfamily => 'Linux', :operatingsystem => 'Amazon' }}
@@ -17,7 +9,7 @@ describe 'gnupg', :type => :class do
       let(:facts) {{ :osfamily => system }}
     end
 
-    it { should contain_class('gnupg::install') }
+    it { expect contain_class('gnupg::install') }
 
     describe "gnupg on system #{system}" do
 
@@ -27,7 +19,7 @@ describe 'gnupg', :type => :class do
           :package_name   => 'gnupg'
         }}
 
-        it { should contain_package('gnupg').with({
+        it { expect contain_package('gnupg').with({
           'ensure' => 'present'})
         }
       end
@@ -38,7 +30,7 @@ describe 'gnupg', :type => :class do
           :package_name   => 'gnupg'
         }}
 
-        it { should contain_package('gnupg').with({
+        it { expect contain_package('gnupg').with({
          'ensure' => 'absent'})
         }
       end
