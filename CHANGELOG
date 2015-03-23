@@ -1,3 +1,6 @@
+2015-03-24 - Dejan Golja <dejan@golja.org> - 1.1.1
+* supports username with -
+
 2015-02-21 - Dejan Golja <dejan@golja.org> - 1.1.0
 * properly supports private key (added new paramater key_type
   for gnupg_key type)
