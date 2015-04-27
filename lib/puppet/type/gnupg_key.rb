@@ -8,6 +8,10 @@ Puppet::Type.newtype(:gnupg_key) do
     ["gnupg", "gnupg2"]
   end
 
+  autorequire(:user) do
+    self[:user]
+  end
+
   KEY_SOURCES = [:key_source, :key_server, :key_content]
 
   KEY_CONTENT_REGEXES = {
