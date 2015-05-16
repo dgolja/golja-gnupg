@@ -1,3 +1,9 @@
+2015-05-16 - Dejan Golja <dejan@golja.org> - 1.2.0
+* autorequire user type when using gnupg_key (tnx to tcinel@atlassian.com)
+* added two new custom facts:
+  * gnupg_command - get full path to gpg exe
+  * gnupg_installed - determine if gpg exe exists on system
+
 2015-03-24 - Dejan Golja <dejan@golja.org> - 1.1.1
 * supports username with -
 
