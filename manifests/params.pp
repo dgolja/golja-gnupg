@@ -10,6 +10,9 @@ class gnupg::params {
     'RedHat': {
       $package_name = 'gnupg2'
     }
+    'Suse': {
+      $package_name = 'gpg2'
+    }
 
     'Linux': {
       if $::operatingsystem == 'Amazon' {

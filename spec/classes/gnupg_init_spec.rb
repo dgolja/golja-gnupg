@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'gnupg', :type => :class do
 
-  ['RedHat', 'Debian', 'Linux'].each do |system|
+  ['RedHat', 'Debian', 'Linux', 'Suse'].each do |system|
     if system == 'Linux'
       let(:facts) {{ :osfamily => 'Linux', :operatingsystem => 'Amazon' }}
     else
