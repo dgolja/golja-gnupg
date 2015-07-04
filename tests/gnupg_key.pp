@@ -14,7 +14,7 @@ gnupg_key { 'jenkins_key':
 
 gnupg_key {'root_remove':
   ensure => absent,
-  key_id => 20BC0A86,
+  key_id => D50582E6,
   user   => root,
 }
 
