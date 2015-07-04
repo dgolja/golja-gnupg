@@ -25,9 +25,5 @@ class gnupg(
   $package_name   = $gnupg::params::package_name,
 ) inherits gnupg::params {
 
-  if !($package_ensure in ['present', 'absent']) {
-    fail('ensure must be either present or absent')
-  }
-
   class {'::gnupg::install': }
 }
