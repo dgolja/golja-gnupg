@@ -18,12 +18,7 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   commands :awk => 'awk'
 
   def remove_key
-    begin
-      fingerprint_command = "gpg --fingerprint --with-colons #{resource[:key_id]} | awk -F: '$1 == \"fpr\" {print $10;}'"
-      fingerprint = Puppet::Util::Execution.execute(fingerprint_command, :uid => user_id)
-    rescue Puppet::ExecutionFailure => e
-      raise Puppet::Error, "Could not determine fingerprint for  #{resource[:key_id]} for user #{resource[:user]}: #{fingerprint}"
-    end
+    fingerprint = fingerprint_key
 
     if resource[:key_type] == :public
       command = "gpg --batch --yes --delete-key #{fingerprint}"
@@ -125,6 +120,16 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
       tmpfile.flush
       break tmpfile.path.to_s
     end
+  end
+
+  def fingerprint_key
+    begin
+      fingerprint_command = "gpg --fingerprint --with-colons #{resource[:key_id]} | awk -F: '$1 == \"fpr\" {print $10;}'"
+      fingerprint = Puppet::Util::Execution.execute(fingerprint_command, :uid => user_id)
+    rescue Puppet::ExecutionFailure => e
+      raise Puppet::Error, "Could not determine fingerprint for  #{resource[:key_id]} for user #{resource[:user]}: #{fingerprint}"
+    end
+    fingerprint
   end
 
   def puppet_content
