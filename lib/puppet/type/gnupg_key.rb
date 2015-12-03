@@ -150,4 +150,9 @@ Puppet::Type.newtype(:gnupg_key) do
 
     defaultto :public
   end
+
+  newparam(:proxy) do
+    desc "Set the proxy to use for HTTP and HKP keyservers."
+  end
+    
 end

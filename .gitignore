@@ -7,3 +7,5 @@ log/*
 Gemfile.lock
 junit/*
 .vagrant/
+.bundle
+vendor

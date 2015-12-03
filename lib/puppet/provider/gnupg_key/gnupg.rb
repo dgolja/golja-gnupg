@@ -53,7 +53,11 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   end
 
   def add_key_from_key_server
-    command = "gpg --keyserver #{resource[:key_server]} --recv-keys #{resource[:key_id]}"
+    if resource[:proxy].empty?
+      command = "gpg --keyserver #{resource[:key_server]} --recv-keys #{resource[:key_id]}"
+    else
+      command = "gpg --keyserver #{resource[:key_server]} --keyserver-options http-proxy=#{resource[:proxy]} --recv-keys #{resource[:key_id]}"
+    end
     begin
       output = Puppet::Util::Execution.execute(command,  :uid => user_id, :failonfail => true)
     rescue Puppet::ExecutionFailure => e
