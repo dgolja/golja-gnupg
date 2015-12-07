@@ -58,6 +58,12 @@ describe Puppet::Type.type(:gnupg_key) do
     }.to raise_error(Puppet::Error)
   end
 
+  it "should not accept invalid formated proxy URL" do
+    expect {
+      @gnupg_key[:proxy] = 'httk://foo.bar/'
+    }.to raise_error(Puppet::Error)
+  end
+
   ['20BC0A86', 'D50582e6', '20BC0a86', '9B7D32F2D50582E6', '3CCe8BC520bc0A86'].each do |val|
     it "should allow key_id with #{val}" do
       @gnupg_key[:key_id] = val

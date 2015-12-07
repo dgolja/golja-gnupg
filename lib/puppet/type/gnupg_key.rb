@@ -153,6 +153,15 @@ Puppet::Type.newtype(:gnupg_key) do
 
   newparam(:proxy) do
     desc "Set the proxy to use for HTTP and HKP keyservers."
+    
+    validate do |value|
+      if value
+        uri = URI.parse(URI.escape(value))   
+        unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS) 
+          raise ArgumentError, "Invalid proxy value #{value}"
+        end
+      end
+    end
   end
     
 end
