@@ -1,3 +1,7 @@
+2016-01-18 - Dejan Golja <dejan@golja.org> - 1.2.2
+* module Remove PaxHeaders from distributed package, so it works with r10k
+
+
 2015-07-04 - Dejan Golja <dejan@golja.org> - 1.2.1
 * remove (present|absent) restriction on $package_ensure
 * add support for SLES
