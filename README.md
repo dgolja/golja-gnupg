@@ -38,7 +38,7 @@ gnupg_key { 'hkp_server_20BC0A86':
   key_id     => '20BC0A86',
   user       => 'root',
   key_server => 'hkp://pgp.mit.edu/',
-  key_type   => public,
+  key_type   => 'public',
 }
 ```
 
@@ -50,7 +50,7 @@ gnupg_key { 'jenkins_foo_key':
   key_id     => 'D50582E6',
   user       => 'foo',
   key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
-  key_type   => public,
+  key_type   => 'public',
 }
 ```
 
@@ -62,7 +62,19 @@ gnupg_key { 'jenkins_foo_key':
   key_id     => 'D50582E6',
   user       => 'foo',
   key_source => 'puppet:///modules/gnupg/D50582E6.key',
-  key_type   => public,
+  key_type   => 'public',
+}
+```
+
+####Add private key D50582E6 from puppet fileserver to user foo
+
+```puppet
+gnupg_key { 'jenkins_foo_key':
+  ensure     => present,
+  key_id     => 'D50582E6',
+  user       => 'foo',
+  key_source => 'puppet:///modules/gnupg/D50582E6.key',
+  key_type   => 'private',
 }
 ```
 
@@ -74,7 +86,7 @@ gnupg_key { 'jenkins_foo_key':
   key_id      => 'D50582E6',
   user        => 'bar',
   key_content => '-----BEGIN BROKEN PUBLIC KEY BLOCK-----...',
-  key_type    => public,
+  key_type    => 'public',
 }
 ```
 *Note*: You should use hiera lookup to get the key content
@@ -86,7 +98,7 @@ gnupg_key {'root_remove':
   ensure   => absent,
   key_id   => '20BC0A86',
   user     => 'root',
-  key_type => public,
+  key_type => 'public',
 }
 ```
 
@@ -164,7 +176,7 @@ before the gnupg_key resource executes.
 
 #####`key_type`
 
-**OPTIONAL** - key type. Valid values (public|private|both). Default: public
+**OPTIONAL** - key type. Valid values ('public'|'private'|'both'). Default: 'public'
 
 PGP key server from where to retrieve the public key. Valid URI schemes are
 *http*, *https*, *ldap* and *hkp*.
