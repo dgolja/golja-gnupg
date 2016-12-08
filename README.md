@@ -166,9 +166,9 @@ before the gnupg_key resource executes.
 
 **OPTIONAL** - key type. Valid values (public|private|both). Default: public
 
-PGP key server from where to retrieve the public key. Valid URI schemes are
-*http*, *https*, *ldap* and *hkp*.
+#####`proxy`
 
+**OPTIONAL** - use a http proxy url to access the keyserver, for example: http://proxy.corp.domain:80.  Default: undef
 
 ### Tests
 
