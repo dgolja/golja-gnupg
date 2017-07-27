@@ -24,6 +24,6 @@ else
   gem 'rubocop'
 end
 
-if puppetversion >= '3.0' && puppetversion < '5.0'
+unless puppetversion >= '5.0'
   gem 'semantic_puppet'
 end
