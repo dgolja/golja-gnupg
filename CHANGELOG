@@ -1,3 +1,6 @@
+2017-07-27 - Scott Brimhall <scott@brimh.al> - 1.2.5
+* Update documentation
+
 2017-07-27 - Scott Brimhall <scott@brimh.al> - 1.2.4
 * Fork golja/gnupg and add gpg_home and sign_key parameters
 

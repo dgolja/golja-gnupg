@@ -1,6 +1,6 @@
 {
   "name": "sbrimhall-gnupg",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "author": "Scott Brimhall",
   "summary": "Manage gnupg package and public keys.  Fork of golja-gnupg with additional parameters for gpg homedir and signing keys.",
   "license": "Apache-2.0",
