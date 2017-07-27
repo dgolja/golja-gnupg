@@ -11,30 +11,24 @@
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "5",
-        "6",
         "7"
       ]
     },
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "5",
-        "6",
         "7"
       ]
     },
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "6",
         "7"
       ]
     },
     {
       "operatingsystem": "SLES",
       "operatingsystemrelease": [
-        "11",
         "12"
       ]
     },
@@ -43,17 +37,14 @@
       "operatingsystemrelease": [
         "10.04",
         "12.04",
-        "14.04"
+        "14.04",
+        "16.04"
       ]
     }
   ],
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">=3.0.0 <6.0.0"
-    },
-    {
-      "name": "pe",
       "version_requirement": ">=3.0.0 <6.0.0"
     }
   ],
