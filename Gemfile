@@ -7,10 +7,6 @@ gem 'puppet-lint', '>= 1.0.0'
 gem 'facter', '>= 1.7.0'
 gem 'rspec-puppet'
 
-# rspec must be v2 for ruby 1.8.7
-if RUBY_VERSION >= '1.8.7' && RUBY_VERSION < '1.9'
-  gem 'rspec', '~> 2.0'
-  gem 'rake', '~> 10.0'
 elsif RUBY_VERSION >= '1.9.3' && RUBY_VERSION < '2.0'
   gem 'public_suffix', '~> 1.4.6'
 elsif RUBY_VERSION >= '2.0' && RUBY_VERSION < '3.0'
