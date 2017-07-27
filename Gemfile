@@ -13,8 +13,8 @@ if RUBY_VERSION >= '1.8.7' && RUBY_VERSION < '1.9'
   gem 'rake', '~> 10.0'
 elsif RUBY_VERSION >= '1.9.3' && RUBY_VERSION < '2.0'
   gem 'public_suffix', '~> 1.4.6'
-  # rubocop requires ruby >= 1.9
-  gem 'rubocop'
+  # rubocop requires ruby >= 2.0 as of 0.42
+  gem 'rubocop', '~> 0.41'
 elsif RUBY_VERSION >= '2.0'
   # metadata-json-lint requires >= 2.0
   gem 'metadata-json-lint'
