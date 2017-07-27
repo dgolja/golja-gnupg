@@ -18,11 +18,11 @@ Tested with Tavis CI
 
 NOTE: For puppet 2.7.x supported module please use version 0.X.X
 
-[![Build Status](https://travis-ci.org/n1tr0g/golja-gnupg.png)](https://travis-ci.org/n1tr0g/golja-gnupg) [![Puppet Forge](http://img.shields.io/puppetforge/v/golja/gnupg.svg)](https://forge.puppetlabs.com/golja/gnupg)
+[![Build Status](https://travis-ci.org/sbrimhall/puppet-gnupg.png)](https://travis-ci.org/sbrimhall/puppet-gnupg) [![Puppet Forge](http://img.shields.io/puppetforge/v/sbrimhall/gnupg.svg)](https://forge.puppetlabs.com/sbrimhall/gnupg)
 
 ##Installation
 
-     $ puppet module install golja/gnupg
+     $ puppet module install sbrimhall/gnupg
 
 ##Usage
 
@@ -37,6 +37,8 @@ gnupg_key { 'hkp_server_20BC0A86':
   ensure     => present,
   key_id     => '20BC0A86',
   user       => 'root',
+  gpg_home   => '/root/.gnupg',
+  sign_key   => true,
   key_server => 'hkp://pgp.mit.edu/',
   key_type   => public,
 }
@@ -49,6 +51,8 @@ gnupg_key { 'jenkins_foo_key':
   ensure     => present,
   key_id     => 'D50582E6',
   user       => 'foo',
+  gpg_home   => '/home/foo/custom_gpg_dir',
+  sign_key   => true,
   key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
   key_type   => public,
 }
@@ -61,6 +65,8 @@ gnupg_key { 'jenkins_foo_key':
   ensure     => present,
   key_id     => 'D50582E6',
   user       => 'foo',
+  gpg_home   => '/home/foo/.gnupg',
+  sign_key   => true,
   key_source => 'puppet:///modules/gnupg/D50582E6.key',
   key_type   => public,
 }
@@ -73,6 +79,8 @@ gnupg_key { 'jenkins_foo_key':
   ensure      => present,
   key_id      => 'D50582E6',
   user        => 'bar',
+  gpg_home    => '/home/bar/.gnupg',
+  sign_key    => true,
   key_content => '-----BEGIN BROKEN PUBLIC KEY BLOCK-----...',
   key_type    => public,
 }
@@ -86,6 +94,7 @@ gnupg_key {'root_remove':
   ensure   => absent,
   key_id   => '20BC0A86',
   user     => 'root',
+  gpg_home => '/root/.gnupg',
   key_type => public,
 }
 ```
@@ -97,6 +106,7 @@ gnupg_key {'root_remove':
   ensure   => absent,
   key_id   => '20BC0A66',
   user     => 'root',
+  gpg_home => '/root/.gnupg',
   key_type => both,
 }
 ```
@@ -127,6 +137,16 @@ Name of the GnuPG package. Default value determined by $::osfamily/$::operatings
 
 **REQUIRED** - System username for who to store the public key. Also define the location of the 
 pubring (default ${HOME}/.gnupg/)
+
+#####`gpg_home`
+
+The absolute path to use for --homedir with the gpg command.  This is required when configuring
+GPG keys for hiera-eyaml-gpg on a puppet server.  Must be a path that is accessible by the user
+defined in the `user` parameter.
+
+#####`sign_key`
+
+Boolean - Whether to sign an imported key or not
 
 #####`key_id`
 

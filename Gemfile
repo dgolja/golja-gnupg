@@ -1,33 +1,21 @@
-source ENV['GEM_SOURCE'] || "https://rubygems.org"
+source ENV['GEM_SOURCE'] || 'https://rubygems.org'
 
-group :development, :test do
-  gem 'rake',                   :require => false
-  gem 'rspec-core','~> 3.1.7',  :require => false
-  gem 'rspec-puppet',           :require => false
-  gem 'puppetlabs_spec_helper', :require => false
-  gem 'puppet-lint',            :require => false
-  gem 'puppet_facts',           :require => false
-  gem 'json',                   :require => false
-  gem 'metadata-json-lint',     :require => false
+puppetversion = ENV.key?('PUPPET_GEM_VERSION') ? ENV['PUPPET_GEM_VERSION'] : ['>= 3.8.7']
+gem 'puppet', puppetversion
+gem 'puppetlabs_spec_helper', '>= 1.2.0'
+gem 'puppet-lint', '>= 1.0.0'
+gem 'facter', '>= 1.7.0'
+gem 'rspec-puppet'
+
+if RUBY_VERSION >= '1.9.3' && RUBY_VERSION < '2.0'
+  gem 'public_suffix', '~> 1.4.6'
+elsif RUBY_VERSION >= '2.0' && RUBY_VERSION < '3.0'
+  # metadata-json-lint requires >= 2.0
+  gem 'metadata-json-lint'
+  # rubocop requires ruby >= 2.0
+  gem 'rubocop'
 end
 
-group :system_tests do
-  gem 'beaker', '~> 2.4',    :require => false
-  gem 'beaker-rspec',        :require => false
-  gem 'serverspec',          :require => false
-  gem 'rspec-system-puppet', :require => false
+unless puppetversion >= '5.0'
+  gem 'semantic_puppet'
 end
-
-if facterversion = ENV['FACTER_GEM_VERSION']
-  gem 'facter', facterversion, :require => false
-else
-  gem 'facter', :require => false
-end
-
-if puppetversion = ENV['PUPPET_GEM_VERSION']
-  gem 'puppet', puppetversion, :require => false
-else
-  gem 'puppet', :require => false
-end
-
-# vim:ft=ruby
