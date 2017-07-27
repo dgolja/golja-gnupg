@@ -2,13 +2,10 @@ require 'rake'
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppet-lint/tasks/puppet-lint'
 
-if RUBY_VERSION > '1.9.3'
-  require 'rubocop/rake_task'
-  RuboCop::RakeTask.new
-end
-
 if RUBY_VERSION >= '2.0'
   require 'metadata-json-lint/rake_task'
+  require 'rubocop/rake_task'
+  RuboCop::RakeTask.new
 end
 
 PuppetLint.configuration.send('disable_80chars')
