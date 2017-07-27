@@ -128,6 +128,12 @@ Name of the GnuPG package. Default value determined by $::osfamily/$::operatings
 **REQUIRED** - System username for who to store the public key. Also define the location of the 
 pubring (default ${HOME}/.gnupg/)
 
+#####`gpg_home`
+
+The absolute path to use for --homedir with the gpg command.  This is required when configuring
+GPG keys for hiera-eyaml-gpg on a puppet server.  Must be a path that is accessible by the user
+defined in the `user` parameter.
+
 #####`key_id`
 
 **REQUIRED** - Key ID. Usually the traditional 8-character key ID. Also accepted the
