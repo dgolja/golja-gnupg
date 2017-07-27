@@ -7,7 +7,7 @@ gem 'puppet-lint', '>= 1.0.0'
 gem 'facter', '>= 1.7.0'
 gem 'rspec-puppet'
 
-elsif RUBY_VERSION >= '1.9.3' && RUBY_VERSION < '2.0'
+if RUBY_VERSION >= '1.9.3' && RUBY_VERSION < '2.0'
   gem 'public_suffix', '~> 1.4.6'
 elsif RUBY_VERSION >= '2.0' && RUBY_VERSION < '3.0'
   # metadata-json-lint requires >= 2.0
