@@ -1,7 +1,7 @@
 ---
 language: ruby
 bundler_args: --without system_tests
-script: "bundle exec rake test SPEC_OPTS='--format documentation'"
+script: "bundle exec rake test"
 matrix:
   fast_finish: true
   include:
