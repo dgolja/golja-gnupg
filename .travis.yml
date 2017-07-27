@@ -13,5 +13,9 @@ matrix:
     env: PUPPET_GEM_VERSION="~> 3.0"
   - rvm: 2.0.0
     env: PUPPET_GEM_VERSION="~> 3.0"
+  - rvm: 2.1.0
+    env: PUPPET_GEM_VERSION="~> 4.0"
+  - rvm: 2.4.0
+    env: PUPPET_GEM_VERSION="~> 5.0"
 notifications:
-  email: dejan@golja.org
+  email: scott@brimh.al
