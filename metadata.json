@@ -1,12 +1,12 @@
 {
-  "name": "golja-gnupg",
-  "version": "1.2.3",
-  "author": "Dejan Golja",
-  "summary": "Manage gnupg package and public keys",
+  "name": "sbrimhall-gnupg",
+  "version": "1.2.4",
+  "author": "Scott Brimhall",
+  "summary": "Manage gnupg package and public keys.  Fork of golja-gnupg with additional parameters for gpg homedir and signing keys.",
   "license": "Apache-2.0",
-  "source": "git://github.com/n1tr0g/golja-gnupg.git",
-  "project_page": "https://github.com/n1tr0g/golja-gnupg",
-  "issues_url": "https://github.com/n1tr0g/golja-gnupg/issues",
+  "source": "git://github.com/sbrimhall/puppet-gnupg.git",
+  "project_page": "https://github.com/sbrimhall/puppet-gnupg",
+  "issues_url": "https://github.com/sbrimhall/puppet-gnupg/issues",
   "operatingsystem_support": [
     {
       "operatingsystem": "RedHat",
@@ -50,11 +50,11 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">=3.0.0 <4.0.0"
+      "version_requirement": ">=3.0.0 <6.0.0"
     },
     {
       "name": "pe",
-      "version_requirement": ">=3.0.0 <4.0.0"
+      "version_requirement": ">=3.0.0 <6.0.0"
     }
   ],
   "tags": [
