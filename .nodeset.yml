@@ -1,27 +1,30 @@
 ---
-default_set: 'centos-64-x64'
 sets:
-  'centos-59-x64':
+  'centos-66-x64':
     nodes:
       "main.foo.vm":
-        prefab: 'centos-59-x64'
-  'centos-64-x64':
+        prefab: 'centos-66-x64'
+  'debian-6011-x64':
     nodes:
       "main.foo.vm":
-        prefab: 'centos-64-x64'
-  'debian-607-x64':
+        prefab: 'debian-6011-x64'
+  'debian-78-x64':
     nodes:
       "main.foo.vm":
-        prefab: 'debian-607-x64'
-  'debian-70rc1-x64':
+        prefab: 'debian-78-x64'
+  'debian-78-i386':
     nodes:
       "main.foo.vm":
-        prefab: 'debian-70rc1-x64'
-  'ubuntu-server-10044-x64':
+        prefab: 'debian-78-i386'
+  'ubuntu-server-1204-x64':
     nodes:
       "main.foo.vm":
-        prefab: 'ubuntu-server-10044-x64'
-  'ubuntu-server-12042-x64':
+        prefab: 'ubuntu-server-1204-x64'
+  'ubuntu-server-1404-x64':
     nodes:
       "main.foo.vm":
-        prefab: 'ubuntu-server-12042-x64'
+        prefab: 'ubuntu-server-1404-x64'
+  'ubuntu-server-1604-x64':
+    nodes:
+      "main.foo.vm":
+        prefab: 'ubuntu-server-1604-x64'
