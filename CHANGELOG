@@ -1,3 +1,6 @@
+2017-07-27 - Scott Brimhall <sbrimhall@salesforce.com> - 1.2.5
+* Fork golja/gnupg and add gpg_home and sign_key parameters
+
 2016-01-22 - Dejan Golja <dejan@golja.org> - 1.2.3
 * Another retry to rebuild repack the module to fix the PaxHeaders bsd tar bug
 
