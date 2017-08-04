@@ -1,7 +1,6 @@
 ---
 language: ruby
-bundler_args: --without system_tests
-before_script: "bundle install --path=vendor --full-index"
+bundler_args: --without system_tests --path=vendor --full-index
 script: "bundle exec rake test"
 matrix:
   fast_finish: true
