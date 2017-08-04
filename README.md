@@ -37,6 +37,8 @@ gnupg_key { 'hkp_server_20BC0A86':
   ensure     => present,
   key_id     => '20BC0A86',
   user       => 'root',
+  gpg_home   => '/root/.gnupg',
+  sign_key   => true,
   key_server => 'hkp://pgp.mit.edu/',
   key_type   => public,
 }
@@ -49,6 +51,8 @@ gnupg_key { 'jenkins_foo_key':
   ensure     => present,
   key_id     => 'D50582E6',
   user       => 'foo',
+  gpg_home   => '/root/.gnupg',
+  sign_key   => true,
   key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
   key_type   => public,
 }
@@ -61,6 +65,8 @@ gnupg_key { 'jenkins_foo_key':
   ensure     => present,
   key_id     => 'D50582E6',
   user       => 'foo',
+  gpg_home   => '/root/.gnupg',
+  sign_key   => true,
   key_source => 'puppet:///modules/gnupg/D50582E6.key',
   key_type   => public,
 }
@@ -73,6 +79,8 @@ gnupg_key { 'jenkins_foo_key':
   ensure      => present,
   key_id      => 'D50582E6',
   user        => 'bar',
+  gpg_home   => '/root/.gnupg',
+  sign_key   => true,
   key_content => '-----BEGIN BROKEN PUBLIC KEY BLOCK-----...',
   key_type    => public,
 }
@@ -169,6 +177,16 @@ before the gnupg_key resource executes.
 #####`proxy`
 
 **OPTIONAL** - use a http proxy url to access the keyserver, for example: http://proxy.corp.domain:80.  Default: undef
+
+#####`gpg_home`
+
+**OPTIONAL** - The absolute path to use for --homedir with the gpg command.  This is required when configuring
+GPG keys for hiera-eyaml-gpg on a puppet server.  Must be a path that is accessible by the user
+defined in the `user` parameter.
+
+#####`sign_key`
+
+**OPTIONAL** - Boolean - Whether to sign an imported key or not
 
 ### Tests
 
