@@ -13,6 +13,8 @@ describe 'gnupg_key install' do
       gnupg_key { 'jenkins_key':
         ensure     => present,
         user       => 'root',
+        gpg_home   => '/root/.gnupg',
+        sign_key   => true,
         key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
         key_id     => 'D50582E6',
       }
@@ -37,6 +39,8 @@ describe 'gnupg_key install' do
       gnupg_key { 'newrelic_key':
         ensure     => present,
         user       => 'root',
+        gpg_home   => '/root/.gnupg',
+        sign_key   => true,
         key_source => 'https://download.newrelic.com/548C16BF.gpg',
         key_id     => '548C16BF',
       }
@@ -61,6 +65,8 @@ describe 'gnupg_key install' do
       gnupg_key { 'root_key_foo':
         ensure    => present,
         user      => 'root',
+        gpg_home  => '/root/.gnupg',
+        sign_key  => true,
         key_server => 'hkp://pgp.mit.edu/',
         key_id     => '20BC0A86',
       }
@@ -102,6 +108,8 @@ describe 'gnupg_key install' do
         ensure     => present,
         key_id     => 20BC0A86,
         user       => root,
+        gpg_home   => 'root/.gnupg',
+        sign_key   => true,
         key_source => "puppet:///modules/gnupg/random.key",
       }
     EOS
@@ -125,6 +133,8 @@ describe 'gnupg_key install' do
       gnupg_key { 'jenkins_key':
         ensure     => present,
         user       => 'root',
+        gpg_home   => 'root'.gnupg',
+        sign_key   => true,
         key_source => '/santa/claus/does/not/exists/org/sorry/kids.key',
         key_id     => '40404040',
       }
@@ -140,6 +150,8 @@ describe 'gnupg_key install' do
       gnupg_key { 'jenkins_key':
         ensure     => present,
         user       => 'root',
+        gpg_home   => '/root/.gnupg',
+        sign_key   => true,
         key_source => 'http://foo.com/key-not-there.key',
         key_id     => '40404040',
       }
