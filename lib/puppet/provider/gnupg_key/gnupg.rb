@@ -30,7 +30,7 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   end
 
   def sign_key
-    unless resource[:sign_key].nil? or resource[:sign_key] == false
+    if resource[:sign_key]
       sign_command = "#{gpg_command} --batch --yes --sign-key #{resource[:key_id]}"
       begin
         sign_output = Puppet::Util::Execution.execute(sign_command, :uid => user_id, :failonfail => true)
