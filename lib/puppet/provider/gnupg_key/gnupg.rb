@@ -99,7 +99,7 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
 
   def add_key_from_key_content
     path = create_temporary_file(user_id, resource[:key_content])
-    command = "#{gpg_comamnd} --batch --import #{path}"
+    command = "#{gpg_command} --batch --import #{path}"
     begin
       output = Puppet::Util::Execution.execute(command, :uid => user_id, :failonfail => true)
     rescue Puppet::ExecutionFailure => e
