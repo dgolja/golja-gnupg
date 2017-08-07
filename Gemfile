@@ -1,7 +1,7 @@
 source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
-puppetversion = ENV.key?('PUPPET_GEM_VERSION') ? ENV['PUPPET_GEM_VERSION'] : ['>= 3.8.7']
-facterversion = ENV.key?('FACTER_GEM_VERSION') ? ENV['FACTER_GEM_VERSION'] : ['>= 2.4.6']
+puppetversion = ENV.key?('PUPPET_GEM_VERSION') ? ENV['PUPPET_GEM_VERSION'] : '>= 3.8.7'
+facterversion = ENV.key?('FACTER_GEM_VERSION') ? ENV['FACTER_GEM_VERSION'] : '>= 2.4.6'
 
 group :development, :test do
   gem 'rake',                               :require => false
