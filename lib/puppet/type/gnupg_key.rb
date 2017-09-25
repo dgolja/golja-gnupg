@@ -79,6 +79,18 @@ Puppet::Type.newtype(:gnupg_key) do
     end
   end
 
+  newparam(:ownertrust_key) do
+    desc "Optional Ownertrust value for the imported key. Defaults to false (no ownertrust)"
+
+    validate do |value|
+      unless value == false or value =~ /^[2-6]/
+        raise ArgumentError, "Invalid value for sign_key.  Must be false, 2-6 (Undefined, Never, Marginal, Full, Ultimate)."
+      end
+    end
+
+    defaultto false
+  end
+
   newparam(:sign_key) do
     desc "Whether to sign the imported key or not. Defaults to false"
 
