@@ -17,6 +17,40 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   commands :gpg => 'gpg'
   commands :awk => 'awk'
 
+  def gpg_command
+    "gpg #{homedir_option}"
+  end
+
+  def homedir_option
+    if resource[:gpg_home].nil?
+      ''
+    else
+      "--homedir #{resource[:gpg_home]}"
+    end
+  end
+
+  def ownertrust_key
+    if resource[:ownertrust_key]
+      ownertrust_command = "echo \"#{resource[:key_id]}:#{resource[:ownertrust_key]}:\" | #{gpg_command} --batch --yes --import-owner-trust"
+      begin
+        sign_output = Puppet::Util::Execution.execute(ownertrust_command, :uid => user_id, :failonfail => true)
+      rescue Puppet::ExecutionFailure => e
+        raise Puppet::Error, "Key #{resource[:key_id]} owner trust could not be imported."
+      end
+    end
+  end
+
+  def sign_key
+    if resource[:sign_key]
+      sign_command = "#{gpg_command} --batch --yes --sign-key #{resource[:key_id]}"
+      begin
+        sign_output = Puppet::Util::Execution.execute(sign_command, :uid => user_id, :failonfail => true)
+      rescue Puppet::ExecutionFailure => e
+        raise Puppet::Error, "Key #{resource[:key_id]} does not exist or could not be signed."
+      end
+    end
+  end
+
   def remove_key
     begin
       fingerprint_command = "gpg --fingerprint --with-colons #{resource[:key_id]} | awk -F: '$1 == \"fpr\" {print $10;}'"
@@ -26,11 +60,11 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
     end
 
     if resource[:key_type] == :public
-      command = "gpg --batch --yes --delete-key #{fingerprint}"
+      command = "#{gpg_command} --batch --yes --delete-key #{fingerprint}"
     elsif resource[:key_type] == :private
-      command = "gpg --batch --yes --delete-secret-key #{fingerprint}"
+      command = "#{gpg_command} --batch --yes --delete-secret-key #{fingerprint}"
     elsif resource[:key_type] == :both
-      command = "gpg --batch --yes --delete-secret-and-public-key #{fingerprint}"
+      command = "#{gpg_command} --batch --yes --delete-secret-and-public-key #{fingerprint}"
     end
 
     begin
@@ -53,16 +87,18 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   end
 
   def add_key_from_key_server
-    if resource[:proxy].empty?
-      command = "gpg --keyserver #{resource[:key_server]} --recv-keys #{resource[:key_id]}"
+    if resource[:proxy].nil?
+      command = "#{gpg_command} --keyserver #{resource[:key_server]} --recv-keys #{resource[:key_id]}"
     else
-      command = "gpg --keyserver #{resource[:key_server]} --keyserver-options http-proxy=#{resource[:proxy]} --recv-keys #{resource[:key_id]}"
+      command = "#{gpg_command} --keyserver #{resource[:key_server]} --keyserver-options http-proxy=#{resource[:proxy]} --recv-keys #{resource[:key_id]}"
     end
     begin
       output = Puppet::Util::Execution.execute(command,  :uid => user_id, :failonfail => true)
     rescue Puppet::ExecutionFailure => e
       raise Puppet::Error, "Key #{resource[:key_id]} does not exist on #{resource[:key_server]}"
     end
+    sign_key
+    ownertrust_key
   end
 
   def add_key_from_key_source
@@ -75,22 +111,26 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
 
   def add_key_from_key_content
     path = create_temporary_file(user_id, resource[:key_content])
-    command = "gpg --import #{path}"
+    command = "#{gpg_command} --batch --import #{path}"
     begin
       output = Puppet::Util::Execution.execute(command, :uid => user_id, :failonfail => true)
     rescue Puppet::ExecutionFailure => e
       raise Puppet::Error, "Error while importing key #{resource[:key_id]} using key content:\n#{output}}"
     end
+    sign_key
+    ownertrust_key
   end
 
   def add_key_at_path
     if File.file?(resource[:key_source])
-      command = "gpg --import #{resource[:key_source]}"
+      command = "#{gpg_command} --batch --import #{resource[:key_source]}"
       begin
         output = Puppet::Util::Execution.execute(command, :uid => user_id, :failonfail => true)
       rescue Puppet::ExecutionFailure => e
         raise Puppet::Error, "Error while importing key #{resource[:key_id]} from #{resource[:key_source]}"
       end
+      sign_key
+      ownertrust_key
     elsif
       raise Puppet::Error, "Local file #{resource[:key_source]} for #{resource[:key_id]} does not exists"
     end
@@ -100,18 +140,20 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
     uri = URI.parse(URI.escape(resource[:key_source]))
     case uri.scheme
     when /https/
-      command = "wget -O- #{resource[:key_source]} | gpg --import"
+      command = "wget -O- #{resource[:key_source]} | #{gpg_command} --batch --import"
     when /http/
-      command = "gpg --fetch-keys #{resource[:key_source]}"
+      command = "#{gpg_command} --fetch-keys #{resource[:key_source]}"
     when 'puppet'
       path = create_temporary_file user_id, puppet_content
-      command = "gpg --import #{path}"
+      command = "#{gpg_command} --batch --import #{path}"
     end
     begin
       output = Puppet::Util::Execution.execute(command, :uid => user_id, :failonfail => true)
     rescue Puppet::ExecutionFailure => e
       raise Puppet::Error, "Error while importing key #{resource[:key_id]} from #{resource[:key_source]}:\n#{output}}"
     end
+    sign_key
+    ownertrust_key
   end
 
   def user_id
@@ -145,9 +187,9 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
     # both only applies to delete and delete still has something to do if only
     # one of the keys is present
     if resource[:key_type] == :public || resource[:key_type] == :both
-      command = "gpg --list-keys --with-colons #{resource[:key_id]}"
+      command = "#{gpg_command} --list-keys --with-colons #{resource[:key_id]}"
     elsif resource[:key_type] == :private
-      command = "gpg --list-secret-keys --with-colons #{resource[:key_id]}"
+      command = "#{gpg_command} --list-secret-keys --with-colons #{resource[:key_id]}"
     end
 
     output = Puppet::Util::Execution.execute(command, :uid => user_id)
