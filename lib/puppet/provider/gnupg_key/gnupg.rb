@@ -29,6 +29,17 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
     end
   end
 
+  def ownertrust_key
+    if resource[:ownertrust_key]
+      ownertrust_command = "echo \"#{resource[:key_id]}:#{resource[:ownertrust_key]}:\" | #{gpg_command} --batch --yes --import-owner-trust"
+      begin
+        sign_output = Puppet::Util::Execution.execute(ownertrust_command, :uid => user_id, :failonfail => true)
+      rescue Puppet::ExecutionFailure => e
+        raise Puppet::Error, "Key #{resource[:key_id]} owner trust could not be imported."
+      end
+    end
+  end
+
   def sign_key
     if resource[:sign_key]
       sign_command = "#{gpg_command} --batch --yes --sign-key #{resource[:key_id]}"
@@ -87,6 +98,7 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
       raise Puppet::Error, "Key #{resource[:key_id]} does not exist on #{resource[:key_server]}"
     end
     sign_key
+    ownertrust_key
   end
 
   def add_key_from_key_source
@@ -106,6 +118,7 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
       raise Puppet::Error, "Error while importing key #{resource[:key_id]} using key content:\n#{output}}"
     end
     sign_key
+    ownertrust_key
   end
 
   def add_key_at_path
@@ -117,6 +130,7 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
         raise Puppet::Error, "Error while importing key #{resource[:key_id]} from #{resource[:key_source]}"
       end
       sign_key
+      ownertrust_key
     elsif
       raise Puppet::Error, "Local file #{resource[:key_source]} for #{resource[:key_id]} does not exists"
     end
@@ -139,6 +153,7 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
       raise Puppet::Error, "Error while importing key #{resource[:key_id]} from #{resource[:key_source]}:\n#{output}}"
     end
     sign_key
+    ownertrust_key
   end
 
   def user_id

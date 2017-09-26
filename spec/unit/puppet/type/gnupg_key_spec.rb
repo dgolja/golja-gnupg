@@ -16,6 +16,22 @@ describe Puppet::Type.type(:gnupg_key) do
     expect(@gnupg_key[:gpg_home]).to eq '/root/.gnupg'
   end
 
+  it 'should accept ownertrust_key false' do
+    @gnupg_key[:ownertrust_key] = false
+    expect(@gnupg_key[:ownertrust_key]).to eq false
+  end
+
+  it 'should accept ownertrust_key numeric value' do
+    @gnupg_key[:ownertrust_key] = 6
+    expect(@gnupg_key[:ownertrust_key]).to eq 6
+  end
+
+  it 'should not accept ownertrust_key out of range numeric value' do
+    expect {
+      @gnupg_key[:ownertrust_key] = 9 
+    }.to raise_error(Puppet::Error, /Invalid value for ownertrust_key*/)
+  end
+
   it 'should accept sign_key' do
     @gnupg_key[:sign_key] = true
     expect(@gnupg_key[:sign_key]).to eq true
