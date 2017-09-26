@@ -18,7 +18,7 @@ describe Puppet::Type.type(:gnupg_key) do
 
   it 'should accept ownertrust_key false' do
     @gnupg_key[:ownertrust_key] = false
-    expect(@gnupg_key[:sign_key]).to eq false
+    expect(@gnupg_key[:ownertrust_key]).to eq false
   end
 
   it 'should accept ownertrust_key numeric value' do
@@ -28,7 +28,7 @@ describe Puppet::Type.type(:gnupg_key) do
 
   it 'should not accept ownertrust_key out of range numeric value' do
     @gnupg_key[:ownertrust_key] = 9
-    expect(@gnupg_key[:sign_key]).to raise_error(Puppet::Error, /Invalid value for sign_key*/)
+    expect(@gnupg_key[:sign_key]).to raise_error(Puppet::ArgumentError, /Invalid value for sign_key*/)
   end
 
   it 'should accept sign_key' do
