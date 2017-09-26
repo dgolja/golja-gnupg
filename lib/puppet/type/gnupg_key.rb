@@ -84,7 +84,7 @@ Puppet::Type.newtype(:gnupg_key) do
 
     validate do |value|
       unless value == false or (0..6).include?(value)
-        raise ArgumentError, "Invalid value for sign_key.  Must be false, 2-6 (Undefined, Never, Marginal, Full, Ultimate)."
+        raise ArgumentError, "Invalid value for ownertrust_key.  Must be false, 2-6 (Undefined, Never, Marginal, Full, Ultimate)."
       end
     end
 
