@@ -9,11 +9,14 @@ describe 'install gnupg keys' do
   it 'should install a public key from a http URL address' do
     pp = <<-EOS
       gnupg_key { 'jenkins_key':
-        ensure     => present,
-        user       => 'root',
-        key_type   => public,
-        key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
-        key_id     => 'D50582E6',
+        ensure         => present,
+        user           => 'root',
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_type       => public,
+        key_source     => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
+        key_id         => 'D50582E6',
       }
     EOS
 
@@ -33,11 +36,14 @@ describe 'install gnupg keys' do
   it 'should install a public key from a https URL address' do
     pp = <<-EOS
       gnupg_key { 'newrelic_key':
-        ensure     => present,
-        user       => 'root',
-        key_type   => public,
-        key_source => 'https://download.newrelic.com/548C16BF.gpg',
-        key_id     => '548C16BF',
+        ensure         => present,
+        user           => 'root',
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_type       => public,
+        key_source     => 'https://download.newrelic.com/548C16BF.gpg',
+        key_id         => '548C16BF',
       }
     EOS
 
@@ -57,11 +63,14 @@ describe 'install gnupg keys' do
   it 'should install a public key from a key server' do
     pp = <<-EOS
       gnupg_key { 'root_key_foo':
-        ensure    => present,
-        user      => 'root',
-        key_type   => public,
-        key_server => 'hkp://pgp.mit.edu/',
-        key_id     => '20BC0A86',
+        ensure         => present,
+        user           => 'root',
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_type       => public,
+        key_server     => 'hkp://pgp.mit.edu/',
+        key_id         => '20BC0A86',
       }
     EOS
 
@@ -85,10 +94,13 @@ describe 'install gnupg keys' do
 
     pp = <<-EOS
       gnupg_key { 'bye_bye_key':
-        ensure => absent,
-        user   => root,
-        key_type   => public,
-        key_id => 926FA9B9,
+        ensure         => absent,
+        user           => root,
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_type       => public,
+        key_id         => 926FA9B9,
       }
     EOS
 
@@ -104,11 +116,14 @@ describe 'install gnupg keys' do
   it 'should install public key from the puppet fileserver/module repository' do
     pp = <<-EOS
       gnupg_key { 'add_key_by_remote_source':
-        ensure     => present,
-        user       => root,
-        key_type   => public,
-        key_id     => 926FA9B9,
-        key_source => "puppet:///modules/gnupg/random.public.key",
+        ensure         => present,
+        user           => root,
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_type       => public,
+        key_id         => 926FA9B9,
+        key_source     => "puppet:///modules/gnupg/random.public.key",
       }
     EOS
 
@@ -130,11 +145,14 @@ describe 'install gnupg keys' do
 
     pp = <<-EOS
       gnupg_key { 'add_key_by_local_file_path':
-        ensure     => present,
-        user       => root,
-        key_type   => public,
-        key_id     => 926FA9B9,
-        key_source => "/tmp/random.public.key",
+        ensure         => present,
+        user           => root,
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_type       => public,
+        key_id         => 926FA9B9,
+        key_source     => "/tmp/random.public.key",
       }
     EOS
 
@@ -156,11 +174,14 @@ describe 'install gnupg keys' do
 
     pp = <<-EOS
       gnupg_key { 'add_key_by_local_file_url':
-        ensure     => present,
-        user       => root,
-        key_type   => public,
-        key_id     => 926FA9B9,
-        key_source => "file:///tmp/random.public.key",
+        ensure         => present,
+        user           => root,
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_type       => public,
+        key_id         => 926FA9B9,
+        key_source     => "file:///tmp/random.public.key",
       }
     EOS
 
@@ -182,11 +203,14 @@ describe 'install gnupg keys' do
 
     pp = <<-EOS
       gnupg_key { 'public_key_from_string_content':
-        ensure      => present,
-        user        => root,
-        key_id      => 926FA9B9,
-        key_type    => public,
-        key_content => "#{key}"
+        ensure         => present,
+        user           => root,
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_id         => 926FA9B9,
+        key_type       => public,
+        key_content    => "#{key}"
       }
     EOS
 
@@ -209,11 +233,14 @@ describe 'install gnupg keys' do
 
     pp = <<-EOS
       gnupg_key { 'public_key_from_invalid_string_content':
-        ensure      => present,
-        user        => root,
-        key_id      => 926FA9B9,
-        key_type    => public,
-        key_content => "#{key}"
+        ensure         => present,
+        user           => root,
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_id         => 926FA9B9,
+        key_type       => public,
+        key_content    => "#{key}"
       }
     EOS
 
@@ -223,11 +250,14 @@ describe 'install gnupg keys' do
   it 'should not install a key, because local resource does not exists' do
     pp = <<-EOS
       gnupg_key { 'jenkins_key':
-        ensure     => present,
-        user       => 'root',
-        key_type   => public,
-        key_source => '/santa/claus/does/not/exists/org/sorry/kids.key',
-        key_id     => '40404040',
+        ensure         => present,
+        user           => 'root',
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_type       => public,
+        key_source     => '/santa/claus/does/not/exists/org/sorry/kids.key',
+        key_id         => '40404040',
       }
     EOS
 
@@ -237,11 +267,14 @@ describe 'install gnupg keys' do
   it 'should fail to install a public key, because there is no content at the supplied URL address' do
     pp = <<-EOS
       gnupg_key { 'jenkins_key':
-        ensure     => present,
-        user       => 'root',
-        key_type   => public,
-        key_source => 'http://foo.com/key-not-there.key',
-        key_id     => '40404040',
+        ensure         => present,
+        user           => 'root',
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_type       => public,
+        key_source     => 'http://foo.com/key-not-there.key',
+        key_id         => '40404040',
       }
     EOS
 
@@ -253,11 +286,14 @@ describe 'install gnupg keys' do
 
     pp = <<-EOS
       gnupg_key { 'add_private_key_by_local_file_path':
-        ensure     => present,
-        user       => root,
-        key_id     => 926FA9B9,
-        key_type   => private,
-        key_source => '/tmp/random.private.key'
+        ensure         => present,
+        user           => root,
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_id         => 926FA9B9,
+        key_type       => private,
+        key_source     => '/tmp/random.private.key'
       }
     EOS
 
@@ -279,11 +315,14 @@ describe 'install gnupg keys' do
 
     pp = <<-EOS
       gnupg_key { 'add_private_key_by_local_file_path':
-        ensure     => present,
-        user       => root,
-        key_id     => 926FA9B9,
-        key_type   => private,
-        key_source => 'file:///tmp/random.private.key'
+        ensure         => present,
+        user           => root,
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_id         => 926FA9B9,
+        key_type       => private,
+        key_source     => 'file:///tmp/random.private.key'
       }
     EOS
 
@@ -305,11 +344,14 @@ describe 'install gnupg keys' do
 
     pp = <<-EOS
       gnupg_key { 'private_key_from_string_content':
-        ensure      => present,
-        user        => root,
-        key_id      => 926FA9B9,
-        key_type    => private,
-        key_content => "#{key}"
+        ensure         => present,
+        user           => root,
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_id         => 926FA9B9,
+        key_type       => private,
+        key_content    => "#{key}"
       }
     EOS
 
@@ -333,10 +375,13 @@ describe 'install gnupg keys' do
 
     pp = <<-EOS
       gnupg_key { 'bye_bye_key':
-        ensure   => absent,
-        user     => root,
-        key_id   => 926FA9B9,
-        key_type => private
+        ensure         => absent,
+        user           => root,
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_id         => 926FA9B9,
+        key_type       => private
       }
     EOS
 
@@ -365,10 +410,13 @@ describe 'install gnupg keys' do
 
     pp = <<-EOS
       gnupg_key { 'bye_bye_key':
-        ensure   => absent,
-        user     => root,
-        key_id   => 926FA9B9,
-        key_type => both
+        ensure         => absent,
+        user           => root,
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_id         => 926FA9B9,
+        key_type       => both
       }
     EOS
 
