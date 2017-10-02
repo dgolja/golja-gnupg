@@ -1,4 +1,5 @@
-#
+# Class: gnupg::install
+# Class to install gnupg
 class gnupg::install {
 
   package { 'gnupg':

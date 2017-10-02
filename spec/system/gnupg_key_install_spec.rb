@@ -11,10 +11,13 @@ describe 'gnupg_key install' do
   it 'should install a public key from a HTTP URL address' do
     pp = <<-EOS.unindent
       gnupg_key { 'jenkins_key':
-        ensure     => present,
-        user       => 'root',
-        key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
-        key_id     => 'D50582E6',
+        ensure         => present,
+        user           => 'root',
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_source     => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
+        key_id         => 'D50582E6',
       }
     EOS
 
@@ -35,10 +38,13 @@ describe 'gnupg_key install' do
   it 'should install a public key from a HTTPS URL address' do
     pp = <<-EOS.unindent
       gnupg_key { 'newrelic_key':
-        ensure     => present,
-        user       => 'root',
-        key_source => 'https://download.newrelic.com/548C16BF.gpg',
-        key_id     => '548C16BF',
+        ensure         => present,
+        user           => 'root',
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_source     => 'https://download.newrelic.com/548C16BF.gpg',
+        key_id         => '548C16BF',
       }
     EOS
 
@@ -59,10 +65,13 @@ describe 'gnupg_key install' do
   it 'should install a public key from a key server' do
     pp = <<-EOS.unindent
       gnupg_key { 'root_key_foo':
-        ensure    => present,
-        user      => 'root',
-        key_server => 'hkp://pgp.mit.edu/',
-        key_id     => '20BC0A86',
+        ensure         => present,
+        user           => 'root',
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_server     => 'hkp://pgp.mit.edu/',
+        key_id         => '20BC0A86',
       }
     EOS
 
@@ -99,10 +108,13 @@ describe 'gnupg_key install' do
   it 'should install public key from the puppet fileserver/module repository' do
     pp = <<-EOS.unindent
       gnupg_key {'add_key_by_remote_source':
-        ensure     => present,
-        key_id     => 20BC0A86,
-        user       => root,
-        key_source => "puppet:///modules/gnupg/random.key",
+        ensure         => present,
+        key_id         => 20BC0A86,
+        user           => root,
+        ownertrust_key => 6,
+        gpg_home       => 'root/.gnupg',
+        sign_key       => true,
+        key_source     => "puppet:///modules/gnupg/random.key",
       }
     EOS
 
@@ -123,10 +135,13 @@ describe 'gnupg_key install' do
   it 'should not install a public key, because local resource does not exists' do
     pp = <<-EOS.unindent
       gnupg_key { 'jenkins_key':
-        ensure     => present,
-        user       => 'root',
-        key_source => '/santa/claus/does/not/exists/org/sorry/kids.key',
-        key_id     => '40404040',
+        ensure         => present,
+        user           => 'root',
+        ownertrust_key => 6,
+        gpg_home       => 'root'.gnupg',
+        sign_key       => true,
+        key_source     => '/santa/claus/does/not/exists/org/sorry/kids.key',
+        key_id         => '40404040',
       }
     EOS
 
@@ -138,10 +153,13 @@ describe 'gnupg_key install' do
   it 'should fail to install a public key, because there is no content at the supplied URL address' do
     pp = <<-EOS.unindent
       gnupg_key { 'jenkins_key':
-        ensure     => present,
-        user       => 'root',
-        key_source => 'http://foo.com/key-not-there.key',
-        key_id     => '40404040',
+        ensure         => present,
+        user           => 'root',
+        ownertrust_key => 6,
+        gpg_home       => '/root/.gnupg',
+        sign_key       => true,
+        key_source     => 'http://foo.com/key-not-there.key',
+        key_id         => '40404040',
       }
     EOS
 

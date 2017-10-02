@@ -59,8 +59,7 @@ Puppet::Type.newtype(:gnupg_key) do
   end
 
   newparam(:user) do
-    desc "The user account in which the PGP public key should be installed.
-    Usually it's stored in HOME/.gnupg/ dir"
+    desc "The user account in which the PGP public key should be installed."
 
     validate do |value|
       # freebsd/linux username limitation
@@ -68,6 +67,40 @@ Puppet::Type.newtype(:gnupg_key) do
         raise ArgumentError, "Invalid username format for #{value}"
       end
     end
+  end
+
+  newparam(:gpg_home) do
+    desc "The absolute path to the gpg homedir where the keyring is stored."
+
+    validate do |value|
+      unless value =~ /^\/[a-zA-Z0-9_-]+/
+        raise ArgumentError, "Invalid directory path for #{value}"
+      end
+    end
+  end
+
+  newparam(:ownertrust_key) do
+    desc "Optional Ownertrust value for the imported key. Defaults to false (no ownertrust)"
+
+    validate do |value|
+      unless value == false or (2..6).include?(value.to_i)
+        raise ArgumentError, "Invalid value for ownertrust_key.  Must be false, 2-6 (Undefined, Never, Marginal, Full, Ultimate)."
+      end
+    end
+
+    defaultto false
+  end
+
+  newparam(:sign_key) do
+    desc "Whether to sign the imported key or not. Defaults to false"
+
+    validate do |value|
+      unless value == true or value == false
+        raise ArgumentError, "Invalid value for sign_key.  Must be true or false."
+      end
+    end
+
+    defaultto false
   end
 
   newparam(:key_source) do

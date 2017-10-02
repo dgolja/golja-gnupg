@@ -11,6 +11,32 @@ describe Puppet::Type.type(:gnupg_key) do
     expect(@gnupg_key[:user]).to eq 'root'
   end
 
+  it 'should accept a gpg_home' do
+    @gnupg_key[:gpg_home] = '/root/.gnupg'
+    expect(@gnupg_key[:gpg_home]).to eq '/root/.gnupg'
+  end
+
+  it 'should accept ownertrust_key false' do
+    @gnupg_key[:ownertrust_key] = false
+    expect(@gnupg_key[:ownertrust_key]).to eq false
+  end
+
+  it 'should accept ownertrust_key numeric value' do
+    @gnupg_key[:ownertrust_key] = "6"
+    expect(@gnupg_key[:ownertrust_key]).to eq "6"
+  end
+
+  it 'should not accept ownertrust_key out of range numeric value' do
+    expect {
+      @gnupg_key[:ownertrust_key] = "9"
+    }.to raise_error(Puppet::Error, /Invalid value for ownertrust_key*/)
+  end
+
+  it 'should accept sign_key' do
+    @gnupg_key[:sign_key] = true
+    expect(@gnupg_key[:sign_key]).to eq true
+  end
+
   it 'should require a key_source or key_server if ensure present' do
     expect {
       Puppet::Type.type(:gnupg_key).new(:name => 'foo', :user => 'root', :ensure => 'present')
@@ -36,6 +62,18 @@ describe Puppet::Type.type(:gnupg_key) do
 
   it 'should accept user names with dashes' do
     @gnupg_key[:user] = 'foo-bar'
+  end
+
+  it 'should not allow invalid formatted gpg_home' do
+    expect {
+      @gnupg_key[:gpg_home] = 'foo-bar'
+    }.to raise_error(Puppet::Error, /Invalid directory path for*/)
+  end
+
+  it 'should not allow non-boolean values' do
+    expect {
+      @gnupg_key[:sign_key] = 'foo-bar'
+    }.to raise_error(Puppet::Error, /Invalid value for sign_key.  Must be true or false./)
   end
 
   ['http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key', 'ldap://keys.puppetlabs.com', 'hkp://pgp.mit.edu/'].each do |val|
