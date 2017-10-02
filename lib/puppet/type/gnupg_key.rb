@@ -83,7 +83,7 @@ Puppet::Type.newtype(:gnupg_key) do
     desc "Optional Ownertrust value for the imported key. Defaults to false (no ownertrust)"
 
     validate do |value|
-      unless value == false or (2..6).include?(value)
+      unless value == false or (2..6).include?(value.to_i)
         raise ArgumentError, "Invalid value for ownertrust_key.  Must be false, 2-6 (Undefined, Never, Marginal, Full, Ultimate)."
       end
     end
