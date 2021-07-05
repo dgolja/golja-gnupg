@@ -62,6 +62,9 @@
     "pgp"
   ],
   "dependencies": [
-  
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.16.0 < 7.0.0"
+    },
   ]
 }
