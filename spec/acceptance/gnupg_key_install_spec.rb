@@ -80,7 +80,7 @@ describe 'install gnupg keys' do
 
 
   it 'should delete a public key' do
-    scp_to master, 'files/random.public.key', '/tmp/random.public.key'
+    scp_to default, 'files/random.public.key', '/tmp/random.public.key'
     gpg("--import /tmp/random.public.key") {}
 
     pp = <<-EOS
@@ -126,7 +126,7 @@ describe 'install gnupg keys' do
   end
 
   it 'should install public key from a local file path' do
-    scp_to master, 'files/random.public.key', '/tmp/random.public.key'
+    scp_to default, 'files/random.public.key', '/tmp/random.public.key'
 
     pp = <<-EOS
       gnupg_key { 'add_key_by_local_file_path':
@@ -152,7 +152,7 @@ describe 'install gnupg keys' do
   end
 
   it 'should install public key from a local file URL address' do
-    scp_to master, 'files/random.public.key', '/tmp/random.public.key'
+    scp_to default, 'files/random.public.key', '/tmp/random.public.key'
 
     pp = <<-EOS
       gnupg_key { 'add_key_by_local_file_url':
@@ -249,7 +249,7 @@ describe 'install gnupg keys' do
   end
 
   it 'should install private key from a local file path' do
-    scp_to master, 'files/random.private.key', '/tmp/random.private.key'
+    scp_to default, 'files/random.private.key', '/tmp/random.private.key'
 
     pp = <<-EOS
       gnupg_key { 'add_private_key_by_local_file_path':
@@ -275,7 +275,7 @@ describe 'install gnupg keys' do
   end
 
   it 'should install private key from a local file URL address' do
-    scp_to master, 'files/random.private.key', '/tmp/random.private.key'
+    scp_to default, 'files/random.private.key', '/tmp/random.private.key'
 
     pp = <<-EOS
       gnupg_key { 'add_private_key_by_local_file_path':
@@ -328,7 +328,7 @@ describe 'install gnupg keys' do
 
   it 'should delete a private key' do
     # importing a private key imports the public key as well
-    scp_to master, 'files/random.private.key', '/tmp/random.private.key'
+    scp_to default, 'files/random.private.key', '/tmp/random.private.key'
     gpg("--import /tmp/random.private.key") {}
 
     pp = <<-EOS
@@ -360,7 +360,7 @@ describe 'install gnupg keys' do
 
   it 'should delete both public and private key for key_id' do
     # importing a private key imports the public key as well
-    scp_to master, 'files/random.private.key', '/tmp/random.private.key'
+    scp_to default, 'files/random.private.key', '/tmp/random.private.key'
     gpg("--import /tmp/random.private.key") {}
 
     pp = <<-EOS
