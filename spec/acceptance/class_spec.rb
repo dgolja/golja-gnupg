@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'gnupg class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
+describe 'gnupg class' do
   case fact('osfamily')
   when 'RedHat'
     package_name = 'gnupg2'
