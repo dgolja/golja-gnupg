@@ -1,4 +1,5 @@
-#
+# @summary Install the package
+# @api private
 class gnupg::install {
 
   package { 'gnupg':

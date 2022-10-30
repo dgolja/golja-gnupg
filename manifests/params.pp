@@ -1,4 +1,5 @@
-# PRIVATE CLASS: do not use directly
+# @summary Set module defaults
+# @api private
 class gnupg::params {
 
   $package_ensure = 'present'
