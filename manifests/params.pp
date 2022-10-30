@@ -1,7 +1,6 @@
 # @summary Set module defaults
 # @api private
 class gnupg::params {
-
   $package_ensure = 'present'
 
   case $::osfamily {
@@ -27,5 +26,4 @@ class gnupg::params {
       fail("Osfamily ${::osfamily} is not supported")
     }
   }
-
 }
