@@ -9,8 +9,6 @@ describe 'gnupg', :type => :class do
       let(:facts) {{ :osfamily => system }}
     end
 
-    it { expect contain_class('gnupg::install') }
-
     describe "gnupg on system #{system}" do
 
       context "when enabled" do
