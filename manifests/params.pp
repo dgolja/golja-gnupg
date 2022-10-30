@@ -1,8 +1,6 @@
 # @summary Set module defaults
 # @api private
 class gnupg::params {
-  $package_ensure = 'present'
-
   case $::osfamily {
     'Debian': {
       $package_name ='gnupg'
