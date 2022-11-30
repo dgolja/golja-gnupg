@@ -88,7 +88,11 @@ Puppet::Type.newtype(:gnupg_key) do
       break if Puppet::Util.absolute_path?(source)
 
       begin
-        uri = URI.parse(URI.escape(source))
+        if URI.const_defined? 'DEFAULT_PARSER'
+          uri = URI.parse(URI::DEFAULT_PARSER.escape(source))
+        else
+          uri = URI.parse(URI.escape(source))
+        end
       rescue => detail
         raise ArgumentError, "Could not understand source #{source}: #{detail}"
       end
@@ -99,8 +103,14 @@ Puppet::Type.newtype(:gnupg_key) do
     end
 
     munge do |source|
-      if %w{file}.include?(URI.parse(URI.escape(source)).scheme)
-        URI.parse(URI.escape(source)).path
+      if URI.const_defined? 'DEFAULT_PARSER'
+        uri = URI.parse(URI::DEFAULT_PARSER.escape(source))
+      else
+        uri = URI.parse(URI.escape(source))
+      end
+
+      if %w{file}.include?(uri.scheme)
+        uri.path
       else
         source
       end
@@ -113,7 +123,11 @@ Puppet::Type.newtype(:gnupg_key) do
 
     validate do |server|
       if server
-        uri = URI.parse(URI.escape(server))
+        if URI.const_defined? 'DEFAULT_PARSER'
+          uri = URI.parse(URI::DEFAULT_PARSER.escape(server))
+        else
+          uri = URI.parse(URI.escape(server))
+        end
         unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS) ||
             uri.is_a?(URI::LDAP) || %w{hkp}.include?(uri.scheme)
           raise ArgumentError, "Invalid keyserver value #{server}"
@@ -156,7 +170,11 @@ Puppet::Type.newtype(:gnupg_key) do
     
     validate do |value|
       if value
-        uri = URI.parse(URI.escape(value))   
+        if URI.const_defined? 'DEFAULT_PARSER'
+          uri = URI.parse(URI::DEFAULT_PARSER.escape(value))
+        else
+          uri = URI.parse(URI.escape(value))
+        end
         unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS) 
           raise ArgumentError, "Invalid proxy value #{value}"
         end
