@@ -1,29 +1,24 @@
-# == Class: gnupg
+# @summary Manage gnupg and public key entries
 #
-# Manage gnupg and public key entries
-#
-# === Parameters
-#
-# [*package_ensure*]
-#   Remove or install the s3tools package. Possible values
-#   present or absent, however most of modern Linux distros relays on
+# @param package_ensure
+#   Remove or install the gnupg package. Possible values
+#   present or absent, however most of modern Linux distros rely on
 #   gnupg so you shouldn't remove the package
 #
-# [*package_name*]
+# @param package_name
 #   name of the package usually gnupg/gnupg2 depends of the distro
 #
-# === Examples
+# @example Basic installation
+#   include gnupg
 #
-#  include gnupg
+# @author Dejan Golja <dejan@golja.org>
 #
-# === Authors
-#
-# Dejan Golja <dejan@golja.org>
-#
-class gnupg(
-  $package_ensure = $gnupg::params::package_ensure,
-  $package_name   = $gnupg::params::package_name,
+class gnupg (
+  String[1] $package_ensure = 'present',
+  String[1] $package_name = $gnupg::params::package_name,
 ) inherits gnupg::params {
-
-  class {'::gnupg::install': }
+  package { 'gnupg':
+    ensure => $package_ensure,
+    name   => $package_name,
+  }
 }

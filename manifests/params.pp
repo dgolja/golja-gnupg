@@ -1,9 +1,7 @@
-# PRIVATE CLASS: do not use directly
+# @summary Set module defaults
+# @api private
 class gnupg::params {
-
-  $package_ensure = 'present'
-
-  case $::osfamily {
+  case $facts['os']['family'] {
     'Debian': {
       $package_name ='gnupg'
     }
@@ -15,16 +13,15 @@ class gnupg::params {
     }
 
     'Linux': {
-      if $::operatingsystem == 'Amazon' {
+      if $facts['os']['name'] == 'Amazon' {
         $package_name = 'gnupg2'
       }
       else {
-        fail("Osfamily ${::osfamily} with operating system ${::operatingsystem} is not supported")
+        fail("Osfamily ${facts['os']['family']} with operating system ${facts['os']['name']} is not supported")
       }
     }
     default: {
-      fail("Osfamily ${::osfamily} is not supported")
+      fail("Osfamily ${facts['os']['family']} is not supported")
     }
   }
-
 }

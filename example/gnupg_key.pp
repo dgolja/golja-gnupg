@@ -12,27 +12,27 @@ gnupg_key { 'jenkins_key':
   key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
 }
 
-gnupg_key {'root_remove':
+gnupg_key { 'root_remove':
   ensure => absent,
   key_id => D50582E6,
   user   => root,
 }
 
-gnupg_key {'add_key_by_remote_source':
+gnupg_key { 'add_key_by_remote_source':
   ensure     => present,
   key_id     => F657C4B7,
   user       => root,
   key_source => 'puppet:///modules/gnupg/random.key',
 }
 
-gnupg_key {'add_key_by_local_source':
+gnupg_key { 'add_key_by_local_source':
   ensure     => present,
   key_id     => F657C4B7,
   user       => root,
   key_source => '/home/foo/public.key',
 }
 
-gnupg_key {'add_key_by_local_source_file':
+gnupg_key { 'add_key_by_local_source_file':
   ensure     => present,
   key_id     => F657C4B5,
   user       => root,

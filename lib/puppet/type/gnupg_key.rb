@@ -88,7 +88,7 @@ Puppet::Type.newtype(:gnupg_key) do
       break if Puppet::Util.absolute_path?(source)
 
       begin
-        uri = URI.parse(URI.escape(source))
+        uri = URI.parse(source)
       rescue => detail
         raise ArgumentError, "Could not understand source #{source}: #{detail}"
       end
@@ -99,11 +99,8 @@ Puppet::Type.newtype(:gnupg_key) do
     end
 
     munge do |source|
-      if %w{file}.include?(URI.parse(URI.escape(source)).scheme)
-        URI.parse(URI.escape(source)).path
-      else
-        source
-      end
+      parsed = URI.parse(source)
+      parsed.scheme == 'file' ? parsed.path : source
     end
 
   end
@@ -113,7 +110,7 @@ Puppet::Type.newtype(:gnupg_key) do
 
     validate do |server|
       if server
-        uri = URI.parse(URI.escape(server))
+        uri = URI.parse(server)
         unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS) ||
             uri.is_a?(URI::LDAP) || %w{hkp}.include?(uri.scheme)
           raise ArgumentError, "Invalid keyserver value #{server}"

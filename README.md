@@ -1,36 +1,36 @@
-#GnuPG puppet module
+# GnuPG puppet module
 
-####Table of Contents
+#### Table of Contents
 
 1. [Overview](##overview)
 2. [Installation](##Installation)
-3. [Usage - Configuration options and additional functionality](@#usage)
+3. [Usage - Configuration options and additional functionality](##usage)
 4. [Reference - An under-the-hood peek at what the module is doing and how](##reference)
 5. [Limitations - OS compatibility, etc.](##limitations)
 6. [Development - Guide for contributing to the module](##development)
 7. [License](##license)
 
-##Overview
+## Overview
 
 Install GnuPG on Ubuntu/Debian/RedHat/CentOS/Amazon AMI and manage users public keys.
 
-Tested with Tavis CI
+[![Puppet Forge](http://img.shields.io/puppetforge/v/golja/gnupg.svg)](https://forge.puppetlabs.com/golja/gnupg)
 
-NOTE: For puppet 2.7.x supported module please use version 0.X.X
+## Installation
 
-[![Build Status](https://travis-ci.org/n1tr0g/golja-gnupg.png)](https://travis-ci.org/n1tr0g/golja-gnupg) [![Puppet Forge](http://img.shields.io/puppetforge/v/golja/gnupg.svg)](https://forge.puppetlabs.com/golja/gnupg)
+```console
+$ puppet module install golja/gnupg
+```
 
-##Installation
+## Usage
 
-     $ puppet module install golja/gnupg
+#### Install GnuPG package
 
-##Usage
+```puppet
+include gnupg
+```
 
-####Install GnuPG package
-
-    include '::gnupg'
-
-####Add public key 20BC0A86 from PGP server from hkp://pgp.mit.edu/ to user root
+#### Add public key 20BC0A86 from PGP server from hkp://pgp.mit.edu/ to user root
 
 ```puppet
 gnupg_key { 'hkp_server_20BC0A86':
@@ -42,7 +42,7 @@ gnupg_key { 'hkp_server_20BC0A86':
 }
 ```
 
-####Add public key D50582E6 from standard http URI to user foo
+#### Add public key D50582E6 from standard http URI to user foo
 
 ```puppet
 gnupg_key { 'jenkins_foo_key':
@@ -54,7 +54,7 @@ gnupg_key { 'jenkins_foo_key':
 }
 ```
 
-####Add public key D50582E6 from puppet fileserver to user foo
+#### Add public key D50582E6 from puppet fileserver to user foo
 
 ```puppet
 gnupg_key { 'jenkins_foo_key':
@@ -66,7 +66,7 @@ gnupg_key { 'jenkins_foo_key':
 }
 ```
 
-####Add public key D50582E6 from puppet fileserver to user bar via a string value
+#### Add public key D50582E6 from puppet fileserver to user bar via a string value
 
 ```puppet
 gnupg_key { 'jenkins_foo_key':
@@ -79,7 +79,7 @@ gnupg_key { 'jenkins_foo_key':
 ```
 *Note*: You should use hiera lookup to get the key content
 
-####Remove public key 20BC0A86 from user root
+#### Remove public key 20BC0A86 from user root
 
 ```puppet
 gnupg_key {'root_remove':
@@ -90,7 +90,7 @@ gnupg_key {'root_remove':
 }
 ```
 
-###Remove both private and public key 20BC0A66
+### Remove both private and public key 20BC0A66
 
 ```puppet
 gnupg_key {'root_remove':
@@ -101,125 +101,42 @@ gnupg_key {'root_remove':
 }
 ```
 
-##Reference
+### Reference
 
-###Classes
-
-####gnupg
-
-#####`package_ensure`
-
-Valid value present/absent. In most cases you should never uninstall this package,
-because most of the modern Linux distros rely on gnupg for package verification, etc
-Default: present
-
-#####`package_name`
-
-Name of the GnuPG package. Default value determined by $::osfamily/$::operatingsystem facts
-
-####gnupg_key
-
-#####`ensure`
-
-**REQUIRED** - Valid value present/absent
-
-#####`user`
-
-**REQUIRED** - System username for who to store the public key. Also define the location of the 
-pubring (default ${HOME}/.gnupg/)
-
-#####`key_id`
-
-**REQUIRED** - Key ID. Usually the traditional 8-character key ID. Also accepted the
-long more accurate (but  less  convenient) 16-character key ID. Accept only hexadecimal
-values.
-
-#####`key_source`
-
-**REQUIRED** if `key_server` or `key_content` is not defined and `ensure` is present.
-A source file containing PGP key. Values can be URIs pointing to remote files,
-or fully qualified paths to files available on the local system.
-
-The available URI schemes are *puppet*, *https*, *http* and *file*. *Puppet*
-URIs will retrieve files from Puppet's built-in file server, and are
-usually formatted as:
-
-puppet:///modules/name_of_module/filename
-
-#####`key_server`
-
-**REQUIRED** if `key_source` or `key_content` is not defined and `ensure` is present.
-
-PGP key server from where to retrieve the public key. Valid URI schemes are
-*http*, *https*, *ldap* and *hkp*.
-
-#####`key_content`
-
-**REQUIRED** if `key_server` or `key_source` is not defined and `ensure` is present.
-
-Provide the content of the key as a string. This is useful when the key is stored as a
-hiera property and the consumer doesn't want to have to write that content to a file
-before the gnupg_key resource executes.
-
-
-#####`key_type`
-
-**OPTIONAL** - key type. Valid values (public|private|both). Default: public
-
-#####`proxy`
-
-**OPTIONAL** - use a http proxy url to access the keyserver, for example: http://proxy.corp.domain:80.  Default: undef
+Please see `REFERENCE.md`.
 
 ### Tests
 
-There are two types of tests distributed with the module. Unit tests with rspec-puppet and system tests using rspec-system or beaker.
+There are two types of tests distributed with the module. Unit tests with rspec-puppet and acceptance tests using Beaker.
 
-For unit testing, make sure you have:
+For unit testing, make sure you have Ruby and bundler installed. Then install the necessary gems:
 
-* rake
-* bundler
-
-Install the necessary gems:
-
-    bundle install --path=vendor
+```bash
+bundle install --path=vendor
+```
 
 And then run the unit tests:
 
-    bundle exec rake spec
+```bash
+bundle exec rake spec
+```
 
+To run the acceptance tests, for example on CentOS Stream 9:
 
-If you want to run the system tests, make sure you also have:
+```bash
+BEAKER_setfile=centos9-64 bundle exec rake acceptance
+```
 
-* vagrant > 1.3.x
-* Virtualbox > 4.2.10
+See [voxpupuli-test](https://github.com/voxpupuli/voxpupuli-test#readme) and [voxpupuli-acceptance](https://github.com/voxpupuli/voxpupuli-acceptance#readme) for more details.
 
-Then run the tests using:
+## Limitations
 
-    bundle exec rake spec:system
+Please see `metadata.json` for OS and Puppet compatibility.
 
-To run the tests on different operating systems, see the sets available in .nodeset.yml and run the specific set with the following syntax:
+## Development
 
-    RSPEC_SET=debian-607-x64 bundle exec rake spec:system
-
-Alernatively you can run beaker tests using:
-
-    bundle exec rake beaker
-
-##Limitations
-
-This module has been tested on:
-
-* Debian 6/7
-* Ubuntu 12+
-* RedHat 5/6/7
-* CentOS 5/6/7
-* Amazon AMI
-
-##Development
-
-Please see CONTRIBUTING.md
+Please see `CONTRIBUTING.md`.
 
 ## License
 
-See LICENSE file
-
+See `LICENSE` file.
