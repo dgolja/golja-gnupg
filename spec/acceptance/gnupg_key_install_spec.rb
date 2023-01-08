@@ -6,14 +6,15 @@ describe 'install gnupg keys' do
     apply_manifest(pp, :catch_failures => true)
   end
 
+  # Technically this HTTP key redirects to HTTPS
   it 'should install a public key from a http URL address' do
     pp = <<-EOS
       gnupg_key { 'jenkins_key':
         ensure     => present,
         user       => 'root',
         key_type   => 'public',
-        key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
-        key_id     => 'D50582E6',
+        key_source => 'http://pkg.jenkins.io/debian/jenkins.io.key',
+        key_id     => '62A9756BFD780C377CF24BA8FCEF32E745F2C3D5',
       }
     EOS
 
@@ -21,8 +22,8 @@ describe 'install gnupg keys' do
     apply_manifest(pp, :catch_changes => true)
 
     # check that gnupg installed the key
-    gpg("--list-keys D50582E6") do |r|
-      expect(r.stdout).to match(/D50582E6/)
+    gpg("--list-keys 62A9756BFD780C377CF24BA8FCEF32E745F2C3D5") do |r|
+      expect(r.stdout).to match(/62A9756BFD780C377CF24BA8FCEF32E745F2C3D5/)
       expect(r.exit_code).to eq(0)
     end
 
@@ -36,8 +37,8 @@ describe 'install gnupg keys' do
         ensure     => present,
         user       => 'root',
         key_type   => 'public',
-        key_source => 'https://download.newrelic.com/548C16BF.gpg',
-        key_id     => '548C16BF',
+        key_source => 'https://download.newrelic.com/infrastructure_agent/gpg/newrelic-infra.gpg',
+        key_id     => 'A758B3FBCD43BE8D123A3476BB29EE038ECCE87C',
       }
     EOS
 
@@ -45,13 +46,13 @@ describe 'install gnupg keys' do
     apply_manifest(pp, :catch_changes => true)
 
     # check that gnupg installed the key
-    gpg("--list-keys 548C16BF") do |r|
-      expect(r.stdout).to match(/548C16BF/)
+    gpg("--list-keys A758B3FBCD43BE8D123A3476BB29EE038ECCE87C") do |r|
+      expect(r.stdout).to match(/A758B3FBCD43BE8D123A3476BB29EE038ECCE87C/)
       expect(r.exit_code).to eq(0)
     end
 
     # clean up
-    gpg("--batch --delete-key B60A3EC9BC013B9C23790EC8B31B29E5548C16BF") {}
+    gpg("--batch --delete-key A758B3FBCD43BE8D123A3476BB29EE038ECCE87C") {}
   end
 
   it 'should install a public key from a key server' do
