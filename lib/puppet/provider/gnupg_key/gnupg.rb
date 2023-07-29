@@ -97,7 +97,11 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   end
 
   def add_key_at_url
-    uri = URI.parse(URI.escape(resource[:key_source]))
+    if URI.const_defined? 'DEFAULT_PARSER'
+      uri = URI.parse(URI::DEFAULT_PARSER.escape(resource[:key_source]))
+    else
+      uri = URI.parse(URI.escape(resource[:key_source]))
+    end
     case uri.scheme
     when /https/
       command = "wget -O- #{resource[:key_source]} | gpg --batch --import"
