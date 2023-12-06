@@ -18,12 +18,7 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
   commands :awk => 'awk'
 
   def remove_key
-    begin
-      fingerprint_command = "gpg --fingerprint --with-colons #{resource[:key_id]} | awk -F: '$1 == \"fpr\" {print $10;}'"
-      fingerprint = Puppet::Util::Execution.execute(fingerprint_command, :uid => user_id)
-    rescue Puppet::ExecutionFailure => e
-      raise Puppet::Error, "Could not determine fingerprint for  #{resource[:key_id]} for user #{resource[:user]}: #{fingerprint}"
-    end
+    fingerprint = fingerprint_key
 
     if resource[:key_type] == :public
       command = "gpg --batch --yes --delete-key #{fingerprint}"
@@ -42,6 +37,7 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
 
   # where most of the magic happens
   # TODO implement dry-run to check if the key_id match the content of the file
+  # TODO how to verify key trust level, rather than just setting it once at key addition time?
   def add_key
     if resource[:key_server]
       add_key_from_key_server
@@ -49,6 +45,9 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
       add_key_from_key_source
     elsif resource[:key_content]
       add_key_from_key_content
+    end
+    if resource[:key_trust]
+      trust_key
     end
   end
 
@@ -114,7 +113,33 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
     begin
       output = Puppet::Util::Execution.execute(command, :uid => user_id, :failonfail => true)
     rescue Puppet::ExecutionFailure => e
-      raise Puppet::Error, "Error while importing key #{resource[:key_id]} from #{resource[:key_source]}:\n#{output}}"
+      raise Puppet::Error, "Error while importing key #{resource[:key_id]} from #{resource[:key_source]}:\n#{output}"
+    end
+  end
+
+  def trust_key
+    case resource[:key_trust].downcase
+    when /^[23456]$/
+      resource[:key_trust] = resource[:key_trust].to_i
+    when /^(undefined|unknown)$/
+      resource[:key_trust] = 2
+    when /^never$/
+      resource[:key_trust] = 3
+    when /^marginal$/
+      resource[:key_trust] = 4
+    when /^full$/
+      resource[:key_trust] = 5
+    when /^ultimate$/
+      resource[:key_trust] = 6
+    else
+      raise Puppet::Error, "Invalid trust value for key #{resource[:key_id]}: #{resource[:key_trust]}.  Supported values are 'undefined', 'never', 'marginal', 'full', 'ultimate'."
+    end
+    path = create_temporary_file(user_id, "#{fingerprint_key}:#{resource[:key_trust]}:")
+    command = "gpg --import-ownertrust #{path}"
+    begin
+      output = Puppet::Util::Execution.execute(command, :uid => user_id, :failonfail => true)
+    rescue Puppet::ExecutionFailure => e
+      raise Puppet::Error, "Error while setting trust on key #{resource[:key_id]} to #{resource[:key_trust]}:\n#{output}"
     end
   end
 
@@ -133,6 +158,16 @@ Puppet::Type.type(:gnupg_key).provide(:gnupg) do
       tmpfile.flush
       break tmpfile.path.to_s
     end
+  end
+
+  def fingerprint_key
+    begin
+      fingerprint_command = "gpg --fingerprint --with-colons #{resource[:key_id]} | awk -F: '$1 == \"fpr\" {print $10;}'"
+      fingerprint = Puppet::Util::Execution.execute(fingerprint_command, :uid => user_id)
+    rescue Puppet::ExecutionFailure => e
+      raise Puppet::Error, "Could not determine fingerprint for  #{resource[:key_id]} for user #{resource[:user]}: #{fingerprint}"
+    end
+    fingerprint
   end
 
   def puppet_content
