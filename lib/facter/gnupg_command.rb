@@ -13,6 +13,6 @@
 #   None
 Facter.add(:gnupg_command) do
   setcode do
-    Facter::Util::Resolution.which('gpg')
+    Facter::Core::Execution.which('gpg')
   end
 end
