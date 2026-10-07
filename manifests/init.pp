@@ -20,10 +20,9 @@
 #
 # Dejan Golja <dejan@golja.org>
 #
-class gnupg(
-  $package_ensure = $gnupg::params::package_ensure,
-  $package_name   = $gnupg::params::package_name,
+class gnupg (
+  String $package_ensure = $gnupg::params::package_ensure,
+  String $package_name   = $gnupg::params::package_name,
 ) inherits gnupg::params {
-
-  class {'::gnupg::install': }
+  class { 'gnupg::install': }
 }
